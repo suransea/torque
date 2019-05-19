@@ -39,7 +39,7 @@ public class DownloadUtils {
      * @param observer 下载回调
      */
     public static void download(@NotNull String url, @Nullable final File path,
-                                @NotNull final String fileName, @Nullable final Observer observer) {
+                                @NotNull final String fileName, @Nullable final DownloadObserver observer) {
         final ProgressListener progressListener = new ProgressListener() {
             @Override
             public void onProgress(long bytesWritten, long contentLength, boolean done) {
@@ -99,19 +99,5 @@ public class DownloadUtils {
         }
         out.flush();
         IOUtils.close(out);
-    }
-
-    public interface Observer {
-
-        /**
-         * 回调进度
-         *
-         * @param progress [0, 1]
-         */
-        void onProgress(double progress);
-
-        void onCompleted(File saved);
-
-        void onError(String message);
     }
 }
