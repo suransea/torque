@@ -16,8 +16,6 @@
 
 package top.srsea.torque.network;
 
-import com.sun.istack.NotNull;
-import com.sun.istack.Nullable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Interceptor;
@@ -26,6 +24,8 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import top.srsea.torque.common.IOUtils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.*;
 
 public class DownloadUtils {
@@ -38,8 +38,8 @@ public class DownloadUtils {
      * @param fileName 保存文件名
      * @param observer 下载回调
      */
-    public static void download(@NotNull String url, @Nullable final File path,
-                                @NotNull final String fileName, @Nullable final DownloadObserver observer) {
+    public static void download(@Nonnull String url, @Nullable final File path,
+                                @Nonnull final String fileName, @Nullable final DownloadObserver observer) {
         final ProgressListener progressListener = new ProgressListener() {
             @Override
             public void onProgress(long bytesWritten, long contentLength, boolean done) {
@@ -50,9 +50,9 @@ public class DownloadUtils {
         };
         RetrofitProvider.get(new OkHttpClient.Builder()
                 .addInterceptor(new Interceptor() {
-                    @NotNull
+                    @Nonnull
                     @Override
-                    public Response intercept(@NotNull Chain chain) throws IOException {
+                    public Response intercept(@Nonnull Chain chain) throws IOException {
                         Response response = chain.proceed(chain.request());
                         return response.newBuilder()
                                 .body(new ProgressResponseBody(response.body(), progressListener))

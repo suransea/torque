@@ -16,7 +16,7 @@
 
 package top.srsea.torque.common;
 
-import com.sun.istack.Nullable;
+import javax.annotation.Nullable;
 
 /**
  * 字符串工具

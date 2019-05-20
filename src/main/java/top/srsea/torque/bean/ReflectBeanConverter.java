@@ -17,8 +17,7 @@
 package top.srsea.torque.bean;
 
 
-import com.sun.istack.NotNull;
-
+import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -39,7 +38,7 @@ public class ReflectBeanConverter<T> implements BeanConverter<T> {
     }
 
     @Override
-    public T fromMap(@NotNull Map<?, ?> map) {
+    public T fromMap(@Nonnull Map<?, ?> map) {
         try {
             T bean = beanClass.newInstance();
             for (Field field : beanClass.getDeclaredFields()) {
@@ -60,7 +59,7 @@ public class ReflectBeanConverter<T> implements BeanConverter<T> {
     }
 
     @Override
-    public List<T> fromMapList(@NotNull List<? extends Map<?, ?>> mapList) {
+    public List<T> fromMapList(@Nonnull List<? extends Map<?, ?>> mapList) {
         List<T> beanList = new ArrayList<>();
         for (Map<?, ?> map : mapList) {
             T bean = fromMap(map);
@@ -71,7 +70,7 @@ public class ReflectBeanConverter<T> implements BeanConverter<T> {
     }
 
     @Override
-    public Map<String, Object> toMap(@NotNull T bean) {
+    public Map<String, Object> toMap(@Nonnull T bean) {
         Map<String, Object> map = new HashMap<>();
         for (Field field : beanClass.getDeclaredFields()) {
             int mod = field.getModifiers();
@@ -87,7 +86,7 @@ public class ReflectBeanConverter<T> implements BeanConverter<T> {
     }
 
     @Override
-    public List<Map<String, Object>> toMapList(@NotNull List<T> beanList) {
+    public List<Map<String, Object>> toMapList(@Nonnull List<T> beanList) {
         List<Map<String, Object>> mapList = new ArrayList<>();
         for (T bean : beanList) {
             Map<String, Object> map = toMap(bean);

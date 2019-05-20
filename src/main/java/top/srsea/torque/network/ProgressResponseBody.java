@@ -16,12 +16,12 @@
 
 package top.srsea.torque.network;
 
-import com.sun.istack.NotNull;
-import com.sun.istack.Nullable;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import okio.*;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 
 public class ProgressResponseBody extends ResponseBody {
@@ -51,7 +51,7 @@ public class ProgressResponseBody extends ResponseBody {
         return totalBytesRead;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public BufferedSource source() {
         if (bufferedSource == null) {
@@ -63,7 +63,7 @@ public class ProgressResponseBody extends ResponseBody {
     private Source source(Source source) {
         return new ForwardingSource(source) {
             @Override
-            public long read(@NotNull Buffer sink, long byteCount) throws IOException {
+            public long read(@Nonnull Buffer sink, long byteCount) throws IOException {
                 long bytesRead = super.read(sink, byteCount);
                 totalBytesRead += bytesRead != -1 ? bytesRead : 0;
                 progressListener.onProgress(

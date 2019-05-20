@@ -17,8 +17,7 @@
 package top.srsea.torque.bean;
 
 
-import com.sun.istack.NotNull;
-
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +34,7 @@ public interface BeanConverter<T> {
      * @param map Source map
      * @return Bean
      */
-    T fromMap(@NotNull Map<?, ?> map);
+    T fromMap(@Nonnull Map<?, ?> map);
 
     /**
      * 将 map list 解析为 Java bean list
@@ -43,7 +42,7 @@ public interface BeanConverter<T> {
      * @param mapList Source map list
      * @return Bean list
      */
-    List<T> fromMapList(@NotNull List<? extends Map<?, ?>> mapList);
+    List<T> fromMapList(@Nonnull List<? extends Map<?, ?>> mapList);
 
     /**
      * 将 bean 转换为 map
@@ -51,7 +50,7 @@ public interface BeanConverter<T> {
      * @param bean Source bean
      * @return map
      */
-    Map<String, Object> toMap(@NotNull T bean);
+    Map<String, Object> toMap(@Nonnull T bean);
 
     /**
      * 将 bean list 转换为 map list
@@ -59,5 +58,5 @@ public interface BeanConverter<T> {
      * @param beanList Source bean list
      * @return map list
      */
-    List<Map<String, Object>> toMapList(@NotNull List<T> beanList);
+    List<Map<String, Object>> toMapList(@Nonnull List<T> beanList);
 }

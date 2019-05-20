@@ -18,8 +18,8 @@ package top.srsea.torque.bean;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.sun.istack.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 
@@ -37,24 +37,24 @@ public class GsonBeanConverter<T> implements BeanConverter<T> {
     }
 
     @Override
-    public T fromMap(@NotNull Map<?, ?> map) {
+    public T fromMap(@Nonnull Map<?, ?> map) {
         return gson.fromJson(gson.toJsonTree(map), beanClass);
     }
 
     @Override
-    public List<T> fromMapList(@NotNull List<? extends Map<?, ?>> mapList) {
+    public List<T> fromMapList(@Nonnull List<? extends Map<?, ?>> mapList) {
         return gson.fromJson(gson.toJsonTree(mapList), new TypeToken<List<T>>() {
         }.getType());
     }
 
     @Override
-    public Map<String, Object> toMap(@NotNull T bean) {
+    public Map<String, Object> toMap(@Nonnull T bean) {
         return gson.fromJson(gson.toJsonTree(bean), new TypeToken<Map<String, Object>>() {
         }.getType());
     }
 
     @Override
-    public List<Map<String, Object>> toMapList(@NotNull List<T> beanList) {
+    public List<Map<String, Object>> toMapList(@Nonnull List<T> beanList) {
         return gson.fromJson(gson.toJsonTree(beanList), new TypeToken<List<Map<String, Object>>>() {
         }.getType());
     }
