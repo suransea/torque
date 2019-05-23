@@ -16,6 +16,7 @@
 
 package top.srsea.torque.network;
 
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Interceptor;
@@ -38,8 +39,8 @@ public class DownloadUtils {
      * @param fileName 保存文件名
      * @param observer 下载回调
      */
-    public static void download(@Nonnull String url, @Nullable final File path,
-                                @Nonnull final String fileName, @Nullable final DownloadObserver observer) {
+    public static Disposable download(@Nonnull String url, @Nullable final File path,
+                                      @Nonnull final String fileName, @Nullable final DownloadObserver observer) {
         final ProgressListener progressListener = new ProgressListener() {
             @Override
             public void onProgress(long bytesWritten, long contentLength, boolean done) {
@@ -48,7 +49,7 @@ public class DownloadUtils {
                 observer.onProgress(progress);
             }
         };
-        RetrofitProvider.get(new OkHttpClient.Builder()
+        return RetrofitProvider.get(new OkHttpClient.Builder()
                 .addInterceptor(new Interceptor() {
                     @Nonnull
                     @Override
@@ -63,7 +64,7 @@ public class DownloadUtils {
                 .download(url)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .doOnNext(new Consumer<ResponseBody>() {
+                .subscribe(new Consumer<ResponseBody>() {
                     @Override
                     public void accept(ResponseBody responseBody) throws Exception {
                         InputStream stream = responseBody.byteStream();
@@ -72,7 +73,7 @@ public class DownloadUtils {
                             savePath = new File(System.getenv("HOME"), "Downloads");
                         }
                         if (!savePath.exists()) {
-                            if (!savePath.mkdirs()) throw new RuntimeException("cannot mkdirs");
+                            if (!savePath.mkdirs()) throw new IOException("cannot mkdirs");
                         }
                         File target = new File(savePath, fileName);
                         saveFile(stream, target);
@@ -80,14 +81,13 @@ public class DownloadUtils {
                         if (observer == null) return;
                         observer.onCompleted(target);
                     }
-                })
-                .doOnError(new Consumer<Throwable>() {
+                }, new Consumer<Throwable>() {
                     @Override
-                    public void accept(Throwable throwable) throws Exception {
+                    public void accept(Throwable throwable) {
                         if (observer == null) return;
                         observer.onError(throwable.getMessage());
                     }
-                }).subscribe();
+                });
     }
 
     private static void saveFile(InputStream stream, File target) throws IOException {
