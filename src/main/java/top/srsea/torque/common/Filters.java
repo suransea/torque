@@ -25,7 +25,7 @@ import java.util.List;
  *
  * @param <T>
  */
-public class Filters<T> {
+public class Filters<T> implements Filter<T> {
     private List<Filter<? super T>> filterList = new ArrayList<>();
     private boolean canceled = false;
 
@@ -59,6 +59,7 @@ public class Filters<T> {
      *
      * @param t target object
      */
+    @Override
     public void apply(T t) {
         apply(t, null);
     }
