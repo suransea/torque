@@ -26,9 +26,9 @@ public class BeanConverters {
         return new ReflectBeanConverter<>(beanClass);
     }
 
-    public static <T> BeanConverter<T> of(Class<T> beanClass, Class<? extends BeanConverter<T>> converterClass) {
+    public static <T> BeanConverter<T> of(Class<T> beanClass, Class<? extends BeanConverter> converterClass) {
         try {
-            Constructor<? extends BeanConverter<T>> constructor = converterClass.getConstructor(Class.class);
+            Constructor<? extends BeanConverter> constructor = converterClass.getConstructor(Class.class);
             return constructor.newInstance(beanClass);
         } catch (Exception e) {
             e.printStackTrace();
