@@ -22,10 +22,23 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitProvider {
+    private static final String BASE_URL = "http://localhost/";
     private OkHttpClient client;
 
     private RetrofitProvider() {
         client = new OkHttpClient.Builder().build();
+    }
+
+    /**
+     * 生成新Retrofit实例
+     *
+     * @return new retrofit instance
+     */
+    public static Retrofit get() {
+        return newRetrofitBuilder()
+                .client(Singleton.INSTANCE.client)
+                .baseUrl(BASE_URL)
+                .build();
     }
 
     /**
@@ -64,7 +77,7 @@ public class RetrofitProvider {
     public static Retrofit get(OkHttpClient client) {
         return newRetrofitBuilder()
                 .client(client)
-                .baseUrl("http://localhost/")
+                .baseUrl(BASE_URL)
                 .build();
     }
 
