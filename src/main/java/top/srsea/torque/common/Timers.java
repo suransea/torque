@@ -23,7 +23,7 @@ import java.util.TimerTask;
 /**
  * 定时器工具
  */
-public class TimerUtils {
+public class Timers {
     private final Timer timer = new Timer();
 
     /**
@@ -93,6 +93,6 @@ public class TimerUtils {
     }
 
     private static class Singleton {
-        private static final TimerUtils INSTANCE = new TimerUtils();
+        private static final Timers INSTANCE = new Timers();
     }
 }
