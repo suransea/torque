@@ -23,6 +23,7 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import top.srsea.torque.common.Conditions;
 import top.srsea.torque.common.IOUtils;
 
 import javax.annotation.Nonnull;
@@ -72,12 +73,11 @@ public class DownloadUtils {
                         if (savePath == null) {
                             savePath = new File(System.getenv("HOME"), "Downloads");
                         }
-                        if (!savePath.exists()) {
-                            if (!savePath.mkdirs()) throw new IOException("cannot mkdirs");
-                        }
+                        Conditions.require(savePath.exists() || savePath.mkdirs(), new IOException("cannot mkdirs."));
                         File target = new File(savePath, fileName);
-                        saveFile(stream, target);
-                        IOUtils.close(stream);
+                        OutputStream out = new FileOutputStream(target);
+                        IOUtils.transfer(stream, out);
+                        IOUtils.close(stream, out);
                         if (observer == null) return;
                         observer.onCompleted(target);
                     }
@@ -88,16 +88,5 @@ public class DownloadUtils {
                         observer.onError(throwable.getMessage());
                     }
                 });
-    }
-
-    private static void saveFile(InputStream stream, File target) throws IOException {
-        byte[] buffer = new byte[8192];
-        OutputStream out = new FileOutputStream(target);
-        int len;
-        while ((len = stream.read(buffer)) > 0) {
-            out.write(buffer, 0, len);
-        }
-        out.flush();
-        IOUtils.close(out);
     }
 }

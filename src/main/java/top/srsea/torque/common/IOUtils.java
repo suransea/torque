@@ -16,8 +16,11 @@
 
 package top.srsea.torque.common;
 
+import javax.annotation.Nonnull;
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * IO 工具
@@ -37,5 +40,34 @@ public class IOUtils {
             } catch (IOException ignored) {
             }
         }
+    }
+
+    /**
+     * 将输入流中数据写入输出流
+     *
+     * @param in  输入流
+     * @param out 输出流
+     * @throws IOException IO 错误
+     */
+    public static void transfer(@Nonnull InputStream in, @Nonnull OutputStream out) throws IOException {
+        transfer(in, out, 4096);
+    }
+
+    /**
+     * 将输入流中数据写入输出流, 使用指定缓冲大小
+     *
+     * @param in 输入流
+     * @param out 输出流
+     * @param bufSize 缓冲大小
+     * @throws IOException IO 错误
+     */
+    public static void transfer(@Nonnull InputStream in, @Nonnull OutputStream out, int bufSize) throws IOException {
+        Conditions.require(bufSize > 0, "buffer size must be positive.");
+        byte[] buf = new byte[bufSize];
+        int read;
+        while ((read = in.read(buf)) != -1) {
+            out.write(buf, 0, read);
+        }
+        out.flush();
     }
 }
