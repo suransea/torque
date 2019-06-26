@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * List 相关工具
+ * List 工具
  */
 public class Lists {
     /**

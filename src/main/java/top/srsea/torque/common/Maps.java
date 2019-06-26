@@ -19,12 +19,27 @@ package top.srsea.torque.common;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Map 工具
+ */
 public class Maps {
+    /**
+     * 创建 Map 中间类实例
+     *
+     * @param keys keys for map
+     * @param <K>  type of key
+     * @return Keys instance
+     */
     @SafeVarargs
     public static <K> Keys<K> keys(K... keys) {
         return new Keys<>(keys);
     }
 
+    /**
+     * Map 中间类
+     *
+     * @param <K> type of key
+     */
     public static class Keys<K> {
         private K[] keys;
 
@@ -32,6 +47,13 @@ public class Maps {
             this.keys = keys;
         }
 
+        /**
+         * 以 keys 和 values 创建 hash map
+         *
+         * @param values values for map
+         * @param <V>    type of value
+         * @return hash map
+         */
         @SafeVarargs
         public final <V> Map<K, V> values(V... values) {
             Conditions.require(keys.length == values.length, "values count not matches.");
