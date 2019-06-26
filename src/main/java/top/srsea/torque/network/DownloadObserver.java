@@ -19,7 +19,6 @@ package top.srsea.torque.network;
 import java.io.File;
 
 public interface DownloadObserver {
-
     /**
      * 回调进度
      *

@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
 /**
  * 字符串工具
  */
-public class Strings {
+public class StringUtils {
     private static final char UNDERLINE = '_';
 
     /**

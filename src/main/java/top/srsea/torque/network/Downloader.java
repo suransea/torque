@@ -25,7 +25,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import top.srsea.torque.common.Conditions;
 import top.srsea.torque.common.IOUtils;
-import top.srsea.torque.common.Strings;
+import top.srsea.torque.common.StringUtils;
 
 import javax.annotation.Nonnull;
 import java.io.*;
@@ -103,7 +103,7 @@ public class Downloader {
                         InputStream stream = responseBody.byteStream();
                         Conditions.require(path.exists() || path.mkdirs(), new IOException("cannot mkdirs."));
                         String saveFileName = fileName;
-                        if (Strings.isBlank(saveFileName)) {
+                        if (StringUtils.isBlank(saveFileName)) {
                             saveFileName = url.substring(url.lastIndexOf('/') + 1);
                         }
                         File target = new File(path, saveFileName);

@@ -23,7 +23,6 @@ import retrofit2.http.Streaming;
 import retrofit2.http.Url;
 
 public interface DownloadService {
-
     @GET
     @Streaming
     Observable<ResponseBody> download(@Url String url);
