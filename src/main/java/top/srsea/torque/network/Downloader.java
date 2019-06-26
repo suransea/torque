@@ -25,23 +25,55 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import top.srsea.torque.common.Conditions;
 import top.srsea.torque.common.IOUtils;
+import top.srsea.torque.common.Strings;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.*;
 
-public class DownloadUtils {
+/**
+ * 文件下载器
+ */
+public class Downloader {
+    private File path;
+
+    public Downloader() {
+        path = new File(System.getenv("HOME"), "Downloads");
+    }
+
+    public Downloader(String path) {
+        this.path = new File(path);
+    }
+
+    public Downloader(File path) {
+        this.path = path;
+    }
+
+    public File getPath() {
+        return path;
+    }
+
+    public void setPath(File path) {
+        this.path = path;
+    }
 
     /**
      * 下载文件
      *
      * @param url      文件地址
-     * @param path     保存路径
+     * @param observer 下载回调
+     */
+    public Disposable download(final String url, final DownloadObserver observer) {
+        return download(url, null, observer);
+    }
+
+    /**
+     * 下载文件, 指定保存的文件名
+     *
+     * @param url      文件地址
      * @param fileName 保存文件名
      * @param observer 下载回调
      */
-    public static Disposable download(@Nonnull String url, @Nullable final File path,
-                                      @Nonnull final String fileName, @Nullable final DownloadObserver observer) {
+    public Disposable download(final String url, final String fileName, final DownloadObserver observer) {
         final ProgressListener progressListener = new ProgressListener() {
             @Override
             public void onProgress(long bytesWritten, long contentLength, boolean done) {
@@ -69,12 +101,12 @@ public class DownloadUtils {
                     @Override
                     public void accept(ResponseBody responseBody) throws Exception {
                         InputStream stream = responseBody.byteStream();
-                        File savePath = path;
-                        if (savePath == null) {
-                            savePath = new File(System.getenv("HOME"), "Downloads");
+                        Conditions.require(path.exists() || path.mkdirs(), new IOException("cannot mkdirs."));
+                        String saveFileName = fileName;
+                        if (Strings.isBlank(saveFileName)) {
+                            saveFileName = url.substring(url.lastIndexOf('/') + 1);
                         }
-                        Conditions.require(savePath.exists() || savePath.mkdirs(), new IOException("cannot mkdirs."));
-                        File target = new File(savePath, fileName);
+                        File target = new File(path, saveFileName);
                         OutputStream out = new FileOutputStream(target);
                         IOUtils.transfer(stream, out);
                         IOUtils.close(stream, out);
