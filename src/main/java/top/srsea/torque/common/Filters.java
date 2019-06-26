@@ -17,7 +17,7 @@
 package top.srsea.torque.common;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -39,7 +39,7 @@ public class Filters<T> implements Filter<T> {
     @SafeVarargs
     public static <T> Filters<T> of(Filter<? super T>... filters) {
         Filters<T> tFilters = new Filters<>();
-        tFilters.filterList.addAll(Arrays.asList(filters));
+        Collections.addAll(tFilters.filterList, filters);
         return tFilters;
     }
 
