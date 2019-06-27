@@ -14,19 +14,27 @@
  * limitations under the License.
  */
 
-package top.srsea.torque.common;
+package top.srsea.torque.value;
+
+
+import top.srsea.torque.function.Provider;
+
+import javax.annotation.Nonnull;
+import java.util.Objects;
 
 /**
- * 过滤器
- *
- * @param <T>
+ * 属性工具
  */
-public interface Filter<T> {
+public class Properties {
     /**
-     * 为对象t应用动作
+     * 创建一个懒加载的属性
      *
-     * @param t target object
-     * @throws Exception all exceptions
+     * @param provider value provider
+     * @param <T>      type of value
+     * @return Lazy instance
      */
-    void apply(T t) throws Exception;
+    public static <T> Lazy<T> lazy(@Nonnull Provider<T> provider) {
+        Objects.requireNonNull(provider, "provider require not null.");
+        return new Lazy<>(provider);
+    }
 }

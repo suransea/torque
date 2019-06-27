@@ -14,19 +14,25 @@
  * limitations under the License.
  */
 
-package top.srsea.torque.common;
+package top.srsea.torque.value;
 
 /**
- * 过滤器
+ * 属性
  *
- * @param <T>
+ * @param <T> type of value
  */
-public interface Filter<T> {
+public interface Property<T> {
     /**
-     * 为对象t应用动作
+     * setter
      *
-     * @param t target object
-     * @throws Exception all exceptions
+     * @param value value to set
      */
-    void apply(T t) throws Exception;
+    void set(T value);
+
+    /**
+     * getter
+     *
+     * @return value
+     */
+    T get();
 }

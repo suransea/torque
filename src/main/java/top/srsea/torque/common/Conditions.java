@@ -33,7 +33,7 @@ public class Conditions {
      * 要求一个表达式为真, 否则抛出运行时异常
      *
      * @param exp bool 表达式
-     * @param msg        异常 message
+     * @param msg 异常 message
      */
     public static void require(boolean exp, String msg) {
         require(exp, new RuntimeException(msg));
@@ -42,8 +42,8 @@ public class Conditions {
     /**
      * 要求一个表达式为真, 否则抛出指定运行时异常
      *
-     * @param exp bool 表达式
-     * @param elseThrow  which exception to throw
+     * @param exp       bool 表达式
+     * @param elseThrow which exception to throw
      */
     public static void require(boolean exp, RuntimeException elseThrow) {
         if (exp) return;
@@ -53,8 +53,8 @@ public class Conditions {
     /**
      * 要求一个表达式为真, 否则抛出指定异常
      *
-     * @param exp bool 表达式
-     * @param elseThrow  which exception to throw
+     * @param exp       bool 表达式
+     * @param elseThrow which exception to throw
      */
     public static <T extends Throwable> void require(boolean exp, T elseThrow) throws T {
         if (exp) return;

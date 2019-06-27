@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package top.srsea.torque.common;
+package top.srsea.torque.function;
 
 /**
- * 过滤器
+ * Represents a provider of results.
  *
- * @param <T>
+ * @param <T> the type of results provided by this provider
  */
-public interface Filter<T> {
+public interface Provider<T> {
+
     /**
-     * 为对象t应用动作
+     * Gets a result.
      *
-     * @param t target object
-     * @throws Exception all exceptions
+     * @return a result
      */
-    void apply(T t) throws Exception;
+    T get();
 }
