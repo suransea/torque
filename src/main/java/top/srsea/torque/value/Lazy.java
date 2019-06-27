@@ -54,6 +54,6 @@ public class Lazy<T> implements Property<T> {
                 }
             }
         }
-        return result;
+        return value;
     }
 }
