@@ -37,4 +37,29 @@ public class Properties {
         Objects.requireNonNull(provider, "provider require not null.");
         return new Lazy<>(provider);
     }
+
+    /**
+     * 创建一个可观察的属性
+     *
+     * @param observer 观察者
+     * @param <T>      type of value
+     * @return Observable instance
+     */
+    public static <T> Observable<T> observable(Observer<T> observer) {
+        return new Observable<>(observer);
+    }
+
+    /**
+     * 创建一个可观察的属性
+     *
+     * @param value    initial value (notify observer uniformly)
+     * @param observer 观察者
+     * @param <T>      type of value
+     * @return Observable instance
+     */
+    public static <T> Observable<T> observable(T value, Observer<T> observer) {
+        Observable<T> observable = new Observable<>(observer);
+        observable.set(value);
+        return observable;
+    }
 }

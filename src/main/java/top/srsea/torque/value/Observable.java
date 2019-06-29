@@ -16,44 +16,29 @@
 
 package top.srsea.torque.value;
 
-import top.srsea.torque.function.Provider;
-
-import javax.annotation.Nonnull;
-
 /**
- * lazy property
+ * Observable Property
  *
  * @param <T> type of value
  */
-public class Lazy<T> implements Property<T> {
-    private volatile T value;
-    private Provider<T> provider;
+public class Observable<T> implements Property<T> {
+    private T value;
+    private Observer<T> observer;
 
-    public Lazy(@Nonnull Provider<T> provider) {
-        this.provider = provider;
+    public Observable(Observer<T> observer) {
+        this.observer = observer;
     }
 
     @Override
     public void set(T value) {
+        T last = this.value;
         this.value = value;
+        if (observer == null) return;
+        observer.onChange(this, last, value);
     }
 
-    /**
-     * 获取值, 首次调用时从 provider 加载
-     *
-     * @return value
-     */
     @Override
     public T get() {
-        T result = value;
-        if (result == null) {
-            synchronized (this) {
-                result = value;
-                if (result == null) {
-                    value = provider.get();
-                }
-            }
-        }
         return value;
     }
 }
