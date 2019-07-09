@@ -44,7 +44,7 @@ public class FileDownloader {
     }
 
     /**
-     * 下载文件, 指定保存的文件名
+     * 下载文件, 回调进度
      *
      * @param param    下载参数
      * @param observer 进度回调
