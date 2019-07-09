@@ -21,19 +21,17 @@ import okhttp3.ResponseBody;
 import okio.*;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 
 public class ProgressResponseBody extends ResponseBody {
     private final ResponseBody responseBody;
-    private final ProgressListener progressListener;
-    @Nullable
+    private final ProgressObserver progressObserver;
     private BufferedSource bufferedSource;
     private long totalBytesRead;
 
-    public ProgressResponseBody(ResponseBody responseBody, ProgressListener progressListener) {
+    public ProgressResponseBody(ResponseBody responseBody, ProgressObserver progressObserver) {
         this.responseBody = responseBody;
-        this.progressListener = progressListener;
+        this.progressObserver = progressObserver;
         totalBytesRead = 0L;
     }
 
@@ -66,8 +64,7 @@ public class ProgressResponseBody extends ResponseBody {
             public long read(@Nonnull Buffer sink, long byteCount) throws IOException {
                 long bytesRead = super.read(sink, byteCount);
                 totalBytesRead += bytesRead != -1 ? bytesRead : 0;
-                progressListener.onProgress(
-                        totalBytesRead, responseBody.contentLength(), bytesRead == -1);
+                progressObserver.onProgress(totalBytesRead, responseBody.contentLength(), bytesRead == -1);
                 return bytesRead;
             }
         };

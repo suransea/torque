@@ -16,27 +16,6 @@
 
 package top.srsea.torque.network;
 
-import java.io.File;
-
-public interface DownloadObserver {
-    /**
-     * 回调进度
-     *
-     * @param progress [0, 1]
-     */
-    void onProgress(double progress);
-
-    /**
-     * 下载完成
-     *
-     * @param saved 保存的文件
-     */
-    void onCompleted(File saved);
-
-    /**
-     * 发生错误
-     *
-     * @param message 错误信息
-     */
-    void onError(String message);
+public interface ProgressObserver {
+    void onProgress(long bytesWritten, long contentLength, boolean done);
 }
