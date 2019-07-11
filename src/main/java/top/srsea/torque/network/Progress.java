@@ -16,6 +16,33 @@
 
 package top.srsea.torque.network;
 
-public interface ProgressObserver {
-    void onProgress(long bytesWritten, long contentLength, boolean done);
+public class Progress {
+    private long current;
+    private long total;
+
+    public Progress(long current, long total) {
+        this.current = current;
+        this.total = total;
+    }
+
+    public long current() {
+        return current;
+    }
+
+    public void setCurrent(long current) {
+        this.current = current;
+    }
+
+    public long total() {
+        return total;
+    }
+
+    public void setTotal(long total) {
+        this.total = total;
+    }
+
+    public double ratio() {
+        if (total <= 0) return 1;
+        return (double) current / (double) total;
+    }
 }

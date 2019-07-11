@@ -16,6 +16,7 @@
 
 package top.srsea.torque.network;
 
+import io.reactivex.Observer;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import okio.*;
@@ -25,14 +26,14 @@ import java.io.IOException;
 
 public class ProgressResponseBody extends ResponseBody {
     private final ResponseBody responseBody;
-    private final ProgressObserver progressObserver;
-    private BufferedSource bufferedSource;
+    private final Observer<Progress> progressObserver;
     private long totalBytesRead;
+    private BufferedSource bufferedSource;
 
-    public ProgressResponseBody(ResponseBody responseBody, ProgressObserver progressObserver) {
+
+    public ProgressResponseBody(ResponseBody responseBody, Observer<Progress> progressObserver) {
         this.responseBody = responseBody;
         this.progressObserver = progressObserver;
-        totalBytesRead = 0L;
     }
 
     @Override
@@ -43,10 +44,6 @@ public class ProgressResponseBody extends ResponseBody {
     @Override
     public long contentLength() {
         return responseBody.contentLength();
-    }
-
-    public long totalBytesRead() {
-        return totalBytesRead;
     }
 
     @Nonnull
@@ -64,7 +61,7 @@ public class ProgressResponseBody extends ResponseBody {
             public long read(@Nonnull Buffer sink, long byteCount) throws IOException {
                 long bytesRead = super.read(sink, byteCount);
                 totalBytesRead += bytesRead != -1 ? bytesRead : 0;
-                progressObserver.onProgress(totalBytesRead, responseBody.contentLength(), bytesRead == -1);
+                progressObserver.onNext(new Progress(totalBytesRead, responseBody.contentLength()));
                 return bytesRead;
             }
         };
