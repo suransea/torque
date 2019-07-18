@@ -31,6 +31,7 @@ import top.srsea.torque.common.StringUtils;
 import javax.annotation.Nonnull;
 import java.io.*;
 import java.net.URI;
+import java.util.Objects;
 
 /**
  * 下载任务
@@ -120,6 +121,7 @@ public class DownloadTask {
             }
             if (StringUtils.isBlank(filename)) {
                 String path = URI.create(url).getPath();
+                Objects.requireNonNull(path, "cannot obtain filename from url because path is undefined.");
                 filename = path.substring(path.lastIndexOf('/') + 1);
             }
             if (savePath == null) {
