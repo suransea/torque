@@ -30,6 +30,7 @@ import top.srsea.torque.common.StringUtils;
 
 import javax.annotation.Nonnull;
 import java.io.*;
+import java.net.URI;
 
 /**
  * 下载任务
@@ -84,9 +85,6 @@ public class DownloadTask {
                     public File apply(ResponseBody responseBody) throws Exception {
                         InputStream stream = responseBody.byteStream();
                         Conditions.require(savePath.exists() || savePath.mkdirs(), new IOException("cannot mkdirs."));
-                        if (StringUtils.isBlank(filename)) {
-                            filename = url.substring(url.lastIndexOf('/') + 1);
-                        }
                         File target = new File(savePath, filename);
                         OutputStream out = new FileOutputStream(target);
                         IOUtils.transfer(stream, out);
@@ -117,8 +115,16 @@ public class DownloadTask {
         }
 
         public DownloadTask build() {
-            if (StringUtils.isBlank(url)) throw new IllegalArgumentException("url cannot be blank.");
-            if (savePath == null) savePath = new File(System.getenv("HOME"), "Downloads");
+            if (StringUtils.isBlank(url)) {
+                throw new IllegalArgumentException("url cannot be blank.");
+            }
+            if (StringUtils.isBlank(filename)) {
+                String path = URI.create(url).getPath();
+                filename = path.substring(path.lastIndexOf('/') + 1);
+            }
+            if (savePath == null) {
+                savePath = new File(System.getenv("HOME"), "Downloads");
+            }
             return new DownloadTask(this);
         }
     }
