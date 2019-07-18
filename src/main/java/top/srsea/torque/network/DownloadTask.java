@@ -20,10 +20,7 @@ import io.reactivex.Observable;
 import io.reactivex.functions.Function;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+import okhttp3.*;
 import top.srsea.torque.common.Conditions;
 import top.srsea.torque.common.IOUtils;
 import top.srsea.torque.common.StringUtils;
@@ -31,7 +28,7 @@ import top.srsea.torque.common.StringUtils;
 import javax.annotation.Nonnull;
 import java.io.*;
 import java.net.URI;
-import java.util.Objects;
+import java.net.URLDecoder;
 
 /**
  * 下载任务
@@ -56,11 +53,63 @@ public class DownloadTask {
                     @Override
                     public Response intercept(@Nonnull Chain chain) throws IOException {
                         Response response = chain.proceed(chain.request());
+                        if (StringUtils.isBlank(filename)) {
+                            filename = obtainFilename(response);
+                        }
                         return response.newBuilder()
                                 .body(new ProgressResponseBody(response.body(), progress))
                                 .build();
                     }
                 }).build();
+    }
+
+    private String obtainFilename(Response response) {
+        String filename = obtainFilename(response.headers());
+        if (StringUtils.isBlank(filename)) {
+            filename = obtainFilename(response.request().url().uri());
+        }
+        if (StringUtils.isBlank(filename)) {
+            throw new IllegalArgumentException("cannot obtain filename.");
+        }
+        return filename;
+    }
+
+    private String obtainFilename(Headers headers) {
+        if (headers == null) {
+            return null;
+        }
+        String contentDisposition = headers.get("Content-Disposition");
+        final String mark = "filename=";
+        if (contentDisposition == null || !contentDisposition.contains(mark)) {
+            return null;
+        }
+        try {
+            String encodedFilename = contentDisposition.substring(contentDisposition.indexOf(mark) + 9);
+            String filename = URLDecoder.decode(encodedFilename, "UTF-8").trim();
+            if (filename.startsWith("\"") && filename.endsWith("\"")) {
+                filename = filename.substring(1, filename.length() - 1);
+            }
+            return filename.trim();
+        } catch (UnsupportedEncodingException e) {
+            return null;
+        }
+    }
+
+    private String obtainFilename(URI uri) {
+        if (uri == null) {
+            return null;
+        }
+        String path = uri.getPath();
+        if (path == null) {
+            return null;
+        }
+        String filename = path.substring(path.lastIndexOf('/') + 1);
+        try {
+            filename = URLDecoder.decode(filename, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return filename;
+        }
+        return filename;
     }
 
     /**
@@ -118,11 +167,6 @@ public class DownloadTask {
         public DownloadTask build() {
             if (StringUtils.isBlank(url)) {
                 throw new IllegalArgumentException("url cannot be blank.");
-            }
-            if (StringUtils.isBlank(filename)) {
-                String path = URI.create(url).getPath();
-                Objects.requireNonNull(path, "cannot obtain filename from url because path is undefined.");
-                filename = path.substring(path.lastIndexOf('/') + 1);
             }
             if (savePath == null) {
                 savePath = new File(System.getenv("HOME"), "Downloads");
