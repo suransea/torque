@@ -21,7 +21,7 @@ import io.reactivex.functions.Function;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 import okhttp3.*;
-import top.srsea.torque.common.Conditions;
+import top.srsea.torque.common.Preconditions;
 import top.srsea.torque.common.IOUtils;
 import top.srsea.torque.common.StringUtils;
 
@@ -134,7 +134,7 @@ public class DownloadTask {
                     @Override
                     public File apply(ResponseBody responseBody) throws Exception {
                         InputStream stream = responseBody.byteStream();
-                        Conditions.require(savePath.exists() || savePath.mkdirs(), new IOException("cannot mkdirs."));
+                        Preconditions.require(savePath.exists() || savePath.mkdirs(), new IOException("cannot mkdirs."));
                         File target = new File(savePath, filename);
                         OutputStream out = new FileOutputStream(target);
                         IOUtils.transfer(stream, out);

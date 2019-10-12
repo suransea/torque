@@ -19,7 +19,7 @@ package top.srsea.torque.common;
 /**
  * 条件判断
  */
-public class Conditions {
+public class Preconditions {
     /**
      * 要求一个表达式为真, 否则抛出运行时异常
      *

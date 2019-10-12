@@ -62,7 +62,7 @@ public class IOUtils {
      * @throws IOException IO 错误
      */
     public static void transfer(@Nonnull InputStream in, @Nonnull OutputStream out, int bufSize) throws IOException {
-        Conditions.require(bufSize > 0, "buffer size must be positive.");
+        Preconditions.require(bufSize > 0, "buffer size must be positive.");
         byte[] buf = new byte[bufSize];
         int read;
         while ((read = in.read(buf)) != -1) {

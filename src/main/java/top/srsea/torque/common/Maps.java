@@ -18,49 +18,37 @@ package top.srsea.torque.common;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Map 工具
  */
 public class Maps {
-    /**
-     * 创建 Map 中间类实例
-     *
-     * @param keys keys for map
-     * @param <K>  type of key
-     * @return Keys instance
-     */
-    @SafeVarargs
-    public static <K> Keys<K> keys(K... keys) {
-        return new Keys<>(keys);
+    public static <K, V> MapWrapper<K, V, HashMap<K, V>> hashMap() {
+        return new MapWrapper<>(new HashMap<K, V>());
     }
 
-    /**
-     * Map 中间类
-     *
-     * @param <K> type of key
-     */
-    public static class Keys<K> {
-        private K[] keys;
+    public static <K extends Comparable, V> MapWrapper<K, V, TreeMap<K, V>> treeMap() {
+        return new MapWrapper<>(new TreeMap<K, V>());
+    }
 
-        private Keys(K[] keys) {
-            this.keys = keys;
+    public static <K, V, M extends Map<K, V>> MapWrapper<K, V, M> of(M map) {
+        return new MapWrapper<>(map);
+    }
+
+    public static class MapWrapper<K, V, M extends Map<K, V>> {
+        private M map;
+
+        public MapWrapper(M map) {
+            this.map = map;
         }
 
-        /**
-         * 以 keys 和 values 创建 hash map
-         *
-         * @param values values for map
-         * @param <V>    type of value
-         * @return hash map
-         */
-        @SafeVarargs
-        public final <V> Map<K, V> values(V... values) {
-            Conditions.require(keys.length == values.length, "values count not matches.");
-            Map<K, V> map = new HashMap<>(keys.length);
-            for (int i = 0; i < keys.length; ++i) {
-                map.put(keys[i], values[i]);
-            }
+        public MapWrapper<K, V, M> put(K key, V value) {
+            map.put(key, value);
+            return this;
+        }
+
+        public M get() {
             return map;
         }
     }
