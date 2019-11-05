@@ -21,7 +21,7 @@ Step 2. Add the dependency
 	<dependency>
 	    <groupId>com.github.suransea</groupId>
 	    <artifactId>torque</artifactId>
-	    <version>1.0.3</version>
+	    <version>x.y.z</version>
 	</dependency>
 
 
@@ -44,9 +44,5 @@ Add it in your root build.gradle at the end of repositories:
 Step 2. Add the dependency
 
 	dependencies {
-	        implementation 'com.github.suransea:torque:1.0.3'
+	        implementation 'com.github.suransea:torque:x.y.z'
 	}
-
-
-
-> 逐步更新中...
