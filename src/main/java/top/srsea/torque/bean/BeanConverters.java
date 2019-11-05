@@ -16,23 +16,25 @@
 
 package top.srsea.torque.bean;
 
-import java.lang.reflect.Constructor;
-
 /**
  * Java Bean转化器工厂
  */
 public class BeanConverters {
-    public static <T> BeanConverter<T> of(Class<T> beanClass) {
-        return new ReflectBeanConverter<>(beanClass);
+
+    /**
+     * 获取基于Gson的BeanConverter
+     * {@link GsonBeanConverter}
+     */
+    public static <T> BeanConverter<T> gson(Class<T> beanClass) {
+        return new GsonBeanConverter<>(beanClass);
     }
 
-    public static <T> BeanConverter<T> of(Class<T> beanClass, Class<? extends BeanConverter> converterClass) {
-        try {
-            Constructor<? extends BeanConverter> constructor = converterClass.getConstructor(Class.class);
-            return constructor.newInstance(beanClass);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+    /**
+     * 获取基于反射的BeanConverter
+     * {@link ReflectBeanConverter}
+     * 缺陷: 无法解析map属性为bean, 如有嵌套Bean请使用{@link BeanConverters#gson(Class)}
+     */
+    public static <T> BeanConverter<T> reflect(Class<T> beanClass) {
+        return new ReflectBeanConverter<>(beanClass);
     }
 }

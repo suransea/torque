@@ -28,7 +28,7 @@ import java.io.OutputStream;
 public class IOUtils {
 
     /**
-     * 尝试关闭所有 resources
+     * 尝试关闭所有 resources, 不抛出异常
      *
      * @param resources IO streams, etc...
      */
@@ -56,8 +56,8 @@ public class IOUtils {
     /**
      * 将输入流中数据写入输出流, 使用指定缓冲大小
      *
-     * @param in 输入流
-     * @param out 输出流
+     * @param in      输入流
+     * @param out     输出流
      * @param bufSize 缓冲大小
      * @throws IOException IO 错误
      */

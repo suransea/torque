@@ -20,8 +20,18 @@ package top.srsea.torque.common;
  * 条件判断
  */
 public class Preconditions {
+
     /**
-     * 要求一个表达式为真, 否则抛出运行时异常
+     * 非空检查
+     */
+    public static void requireNonNull(Object obj) {
+        if (obj == null) {
+            throw new NullPointerException();
+        }
+    }
+
+    /**
+     * 要求表达式为真, 否则抛出运行时异常
      *
      * @param exp bool 表达式
      */
@@ -30,7 +40,7 @@ public class Preconditions {
     }
 
     /**
-     * 要求一个表达式为真, 否则抛出运行时异常
+     * 要求表达式为真, 否则抛出运行时异常
      *
      * @param exp bool 表达式
      * @param msg 异常 message
@@ -40,7 +50,7 @@ public class Preconditions {
     }
 
     /**
-     * 要求一个表达式为真, 否则抛出指定运行时异常
+     * 要求表达式为真, 否则抛出指定运行时异常
      *
      * @param exp       bool 表达式
      * @param elseThrow which exception to throw
@@ -51,7 +61,7 @@ public class Preconditions {
     }
 
     /**
-     * 要求一个表达式为真, 否则抛出指定异常
+     * 要求表达式为真, 否则抛出指定异常
      *
      * @param exp       bool 表达式
      * @param elseThrow which exception to throw

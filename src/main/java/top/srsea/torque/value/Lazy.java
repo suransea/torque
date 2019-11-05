@@ -34,6 +34,7 @@ public class Lazy<T> implements Property<T> {
     }
 
     @Override
+    @Deprecated
     public void set(T value) {
         this.value = value;
     }
@@ -45,12 +46,13 @@ public class Lazy<T> implements Property<T> {
      */
     @Override
     public T get() {
-        T result = value;
-        if (result == null) {
+        T tmp = value;
+        if (tmp == null) {
             synchronized (this) {
-                result = value;
-                if (result == null) {
+                tmp = value;
+                if (tmp == null) {
                     value = provider.get();
+                    provider = null;
                 }
             }
         }
