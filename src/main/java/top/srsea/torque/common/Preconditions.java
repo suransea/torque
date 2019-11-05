@@ -16,6 +16,8 @@
 
 package top.srsea.torque.common;
 
+import javax.annotation.Nullable;
+
 /**
  * 条件判断
  */
@@ -24,7 +26,7 @@ public class Preconditions {
     /**
      * 非空检查
      */
-    public static void requireNonNull(Object obj) {
+    public static void requireNonNull(@Nullable Object obj) {
         if (obj == null) {
             throw new NullPointerException();
         }
