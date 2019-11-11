@@ -23,14 +23,18 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * IO 工具
+ * Common IO utilities.
+ *
+ * @author sea
  */
-public class IOUtils {
+public class IOHelper {
+    private IOHelper() {
+    }
 
     /**
-     * 尝试关闭所有 resources, 不抛出异常
+     * Closes all the resources silently.
      *
-     * @param resources IO streams, etc...
+     * @param resources resources array, item implemented {@link Closeable}
      */
     public static void close(Closeable... resources) {
         for (Closeable resource : resources) {
@@ -43,23 +47,23 @@ public class IOUtils {
     }
 
     /**
-     * 将输入流中数据写入输出流
+     * Writes data from the input stream to the output stream.
      *
-     * @param in  输入流
-     * @param out 输出流
-     * @throws IOException IO 错误
+     * @param in  source
+     * @param out target
+     * @throws IOException if an I/O error occurs
      */
     public static void transfer(@Nonnull InputStream in, @Nonnull OutputStream out) throws IOException {
         transfer(in, out, 4096);
     }
 
     /**
-     * 将输入流中数据写入输出流, 使用指定缓冲大小
+     * Writes data from the input stream to the output stream, using the specified buffer size.
      *
-     * @param in      输入流
-     * @param out     输出流
-     * @param bufSize 缓冲大小
-     * @throws IOException IO 错误
+     * @param in      source
+     * @param out     target
+     * @param bufSize buffer size, must be positive
+     * @throws IOException if an I/O error occurs
      */
     public static void transfer(@Nonnull InputStream in, @Nonnull OutputStream out, int bufSize) throws IOException {
         Preconditions.require(bufSize > 0, "buffer size must be positive.");

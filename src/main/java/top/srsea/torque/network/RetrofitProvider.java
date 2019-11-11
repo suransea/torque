@@ -21,16 +21,32 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * A retrofit provider.
+ *
+ * @author sea
+ */
 public class RetrofitProvider {
+
+    /**
+     * Default base url.
+     */
     private static final String BASE_URL = "http://localhost/";
+
+    /**
+     * Default OkHttpClient instance
+     */
     private OkHttpClient client;
 
+    /**
+     * Constructs an instance
+     */
     private RetrofitProvider() {
         client = new OkHttpClient.Builder().build();
     }
 
     /**
-     * 生成新Retrofit实例
+     * Returns a new Retrofit with default settings.
      *
      * @return new retrofit instance
      */
@@ -42,9 +58,9 @@ public class RetrofitProvider {
     }
 
     /**
-     * 生成新Retrofit实例
+     * Returns a new Retrofit with the specific base url.
      *
-     * @param baseUrl the specified endpoint values
+     * @param baseUrl the specified base url
      * @return new retrofit instance
      */
     public static Retrofit get(String baseUrl) {
@@ -55,10 +71,10 @@ public class RetrofitProvider {
     }
 
     /**
-     * 生成新Retrofit实例
+     * Returns a new Retrofit with the specific base url and OkHttpClient instance.
      *
-     * @param baseUrl the specified endpoint values
-     * @param client  the custom OkHttpClient
+     * @param baseUrl the specified base url
+     * @param client  the specific OkHttpClient instance
      * @return new retrofit instance
      */
     public static Retrofit get(String baseUrl, OkHttpClient client) {
@@ -69,9 +85,9 @@ public class RetrofitProvider {
     }
 
     /**
-     * 生成新Retrofit实例
+     * Returns a new Retrofit with the specific OkHttpClient instance.
      *
-     * @param client the custom OkHttpClient
+     * @param client the specific OkHttpClient instance
      * @return new retrofit instance
      */
     public static Retrofit get(OkHttpClient client) {
@@ -81,13 +97,25 @@ public class RetrofitProvider {
                 .build();
     }
 
+    /**
+     * Creates a new retrofit builder with RxJava and Gson adapter.
+     *
+     * @return new retrofit builder with RxJava and Gson adapter
+     */
     private static Retrofit.Builder newRetrofitBuilder() {
         return new Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create());
     }
 
+    /**
+     * The holder of {@code RetrofitProvider}
+     */
     private static class Singleton {
+
+        /**
+         * Single {@code RetrofitProvider} instance.
+         */
         private static final RetrofitProvider INSTANCE = new RetrofitProvider();
     }
 }

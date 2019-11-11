@@ -19,12 +19,16 @@ package top.srsea.torque.common;
 import javax.annotation.Nullable;
 
 /**
- * 条件判断
+ * Preconditions.
+ *
+ * @author sea
  */
 public class Preconditions {
 
     /**
-     * 非空检查
+     * Ensures the object is not null or throws a NullPointerException.
+     *
+     * @throws NullPointerException the object is null
      */
     public static void requireNonNull(@Nullable Object obj) {
         if (obj == null) {
@@ -33,29 +37,32 @@ public class Preconditions {
     }
 
     /**
-     * 要求表达式为真, 否则抛出运行时异常
+     * Ensures the expression is true or throws a RuntimeException.
      *
-     * @param exp bool 表达式
+     * @param exp expression
+     * @throws RuntimeException expression is {@code false}
      */
     public static void require(boolean exp) {
-        require(exp, "Failed requirement.");
+        require(exp, "A Failed requirement.");
     }
 
     /**
-     * 要求表达式为真, 否则抛出运行时异常
+     * Ensures the expression is true or throws a RuntimeException, with the specific message.
      *
-     * @param exp bool 表达式
-     * @param msg 异常 message
+     * @param exp expression
+     * @param msg message for RuntimeException
+     * @throws RuntimeException expression is {@code false}
      */
     public static void require(boolean exp, String msg) {
         require(exp, new RuntimeException(msg));
     }
 
     /**
-     * 要求表达式为真, 否则抛出指定运行时异常
+     * Ensures the expression is true or throws a specific RuntimeException.
      *
-     * @param exp       bool 表达式
-     * @param elseThrow which exception to throw
+     * @param exp       expression
+     * @param elseThrow exception to throw
+     * @throws RuntimeException expression is {@code false}
      */
     public static void require(boolean exp, RuntimeException elseThrow) {
         if (exp) return;
@@ -63,10 +70,11 @@ public class Preconditions {
     }
 
     /**
-     * 要求表达式为真, 否则抛出指定异常
+     * Ensures the expression is true or throws a specific Exception.
      *
-     * @param exp       bool 表达式
-     * @param elseThrow which exception to throw
+     * @param exp       expression
+     * @param elseThrow exception to throw
+     * @param <T>       type of exception
      */
     public static <T extends Throwable> void require(boolean exp, T elseThrow) throws T {
         if (exp) return;

@@ -17,22 +17,29 @@
 package top.srsea.torque.bean;
 
 /**
- * Java Bean转化器工厂
+ * Available built-in converters
+ *
+ * @author sea
  */
 public class BeanConverters {
 
     /**
-     * 获取基于Gson的BeanConverter
-     * {@link GsonBeanConverter}
+     * Creates a new {@code BeanConverter} instance implement with Gson {@link com.google.gson.Gson}.
+     *
+     * @param beanClass class of bean
+     * @see GsonBeanConverter
      */
     public static <T> BeanConverter<T> gson(Class<T> beanClass) {
         return new GsonBeanConverter<>(beanClass);
     }
 
     /**
-     * 获取基于反射的BeanConverter
-     * {@link ReflectBeanConverter}
-     * 缺陷: 无法解析map属性为bean, 如有嵌套Bean请使用{@link BeanConverters#gson(Class)}
+     * Creates a new {@code BeanConverter} instance implement with reflect.
+     *
+     * <p>Notice: Cannot parse beans of map properties, for nesting map please use {@link BeanConverters#gson(Class)}
+     *
+     * @param beanClass class of bean
+     * @see ReflectBeanConverter
      */
     public static <T> BeanConverter<T> reflect(Class<T> beanClass) {
         return new ReflectBeanConverter<>(beanClass);

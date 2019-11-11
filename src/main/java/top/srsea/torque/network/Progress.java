@@ -16,31 +16,76 @@
 
 package top.srsea.torque.network;
 
+/**
+ * A progress status.
+ *
+ * @author sea
+ */
 public class Progress {
+
+    /**
+     * Current value, usual as bytes.
+     */
     private long current;
+
+    /**
+     * Total value, usual as bytes.
+     */
     private long total;
 
+    /**
+     * Constructs an instance with current and total.
+     *
+     * @param current current value
+     * @param total   total value
+     */
     public Progress(long current, long total) {
         this.current = current;
         this.total = total;
     }
 
+    /**
+     * Gets the current value.
+     *
+     * @return current value
+     */
     public long current() {
         return current;
     }
 
+
+    /**
+     * Sets the current value.
+     *
+     * @param current current value
+     */
     public void setCurrent(long current) {
         this.current = current;
     }
 
+    /**
+     * Gets the total value.
+     *
+     * @return total value
+     */
     public long total() {
         return total;
     }
 
+    /**
+     * Sets the total value.
+     *
+     * @param total total value.
+     */
     public void setTotal(long total) {
         this.total = total;
     }
 
+    /**
+     * Returns the ratio between current and total.
+     *
+     * @return the ratio between current and total
+     */
     public double ratio() {
         if (total <= 0) return 1;
         return (double) current / (double) total;

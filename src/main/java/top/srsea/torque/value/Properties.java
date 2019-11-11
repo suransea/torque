@@ -23,15 +23,20 @@ import javax.annotation.Nonnull;
 import java.util.Objects;
 
 /**
- * 属性工具
+ * Properties.
+ *
+ * @author sea
+ * @see Lazy
+ * @see Observable
  */
 public class Properties {
+
     /**
-     * 创建一个懒加载的属性
+     * Creates a lazy loaded property.
      *
      * @param provider value provider
      * @param <T>      type of value
-     * @return Lazy instance
+     * @return a lazy loaded property
      */
     public static <T> Lazy<T> lazy(@Nonnull Provider<T> provider) {
         Objects.requireNonNull(provider, "provider require not null.");
@@ -39,23 +44,23 @@ public class Properties {
     }
 
     /**
-     * 创建一个可观察的属性
+     * Creates an observable property.
      *
-     * @param observer 观察者
+     * @param observer value observer
      * @param <T>      type of value
-     * @return Observable instance
+     * @return an observable property
      */
     public static <T> Observable<T> observable(Observer<T> observer) {
         return new Observable<>(observer);
     }
 
     /**
-     * 创建一个可观察的属性
+     * Creates an observable property, with the specific initial value.
      *
-     * @param value    initial value (notify observer uniformly)
-     * @param observer 观察者
+     * @param value    initial value (notify the observer uniformly)
+     * @param observer value observer
      * @param <T>      type of value
-     * @return Observable instance
+     * @return an observable property with the specific initial value.
      */
     public static <T> Observable<T> observable(T value, Observer<T> observer) {
         Observable<T> observable = new Observable<>(observer);

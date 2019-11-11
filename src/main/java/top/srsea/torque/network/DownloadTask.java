@@ -21,9 +21,9 @@ import io.reactivex.functions.Function;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 import okhttp3.*;
+import top.srsea.torque.common.IOHelper;
 import top.srsea.torque.common.Preconditions;
-import top.srsea.torque.common.IOUtils;
-import top.srsea.torque.common.StringUtils;
+import top.srsea.torque.common.StringHelper;
 
 import javax.annotation.Nonnull;
 import java.io.*;
@@ -31,14 +31,37 @@ import java.net.URI;
 import java.net.URLDecoder;
 
 /**
- * 下载任务
+ * A download task, with observable progress.
+ *
+ * @author sea
  */
 public class DownloadTask {
+
+    /**
+     * A progress subject to publish and subscribe.
+     */
     private Subject<Progress> progress;
+
+    /**
+     * Parent path to save file, default is {@code ${HOME}/Downloads}
+     */
     private File savePath;
+
+    /**
+     * Filename of download file, if empty, it will be obtained from response.
+     */
     private String filename;
+
+    /**
+     * Remote file URL, required.
+     */
     private String url;
 
+    /**
+     * Constructs an instance with builder.
+     *
+     * @param builder the specific builder.
+     */
     private DownloadTask(Builder builder) {
         progress = PublishSubject.create();
         savePath = builder.savePath;
@@ -46,6 +69,11 @@ public class DownloadTask {
         url = builder.url;
     }
 
+    /**
+     * Creates a new {@code OkHttpClient} instance with progress observer.
+     *
+     * @return new {@code OkHttpClient} instance with progress observer
+     */
     private OkHttpClient newOkHttpClient() {
         return new OkHttpClient.Builder()
                 .addInterceptor(new Interceptor() {
@@ -53,7 +81,7 @@ public class DownloadTask {
                     @Override
                     public Response intercept(@Nonnull Chain chain) throws IOException {
                         Response response = chain.proceed(chain.request());
-                        if (StringUtils.isBlank(filename)) {
+                        if (StringHelper.isBlank(filename)) {
                             filename = obtainFilename(response);
                         }
                         return response.newBuilder()
@@ -63,17 +91,34 @@ public class DownloadTask {
                 }).build();
     }
 
+    /**
+     * Obtains a filename from the response.
+     *
+     * <p>Obtains a filename from headers preferentially, if failed, obtain a filename from url path.
+     *
+     * @param response response to obtain a filename.
+     * @return filename
+     * @throws IllegalArgumentException cannot obtain a filename from the response
+     */
     private String obtainFilename(Response response) {
         String filename = obtainFilename(response.headers());
-        if (StringUtils.isBlank(filename)) {
+        if (StringHelper.isBlank(filename)) {
             filename = obtainFilename(response.request().url().uri());
         }
-        if (StringUtils.isBlank(filename)) {
-            throw new IllegalArgumentException("cannot obtain filename.");
+        if (StringHelper.isBlank(filename)) {
+            throw new IllegalArgumentException("cannot obtain a filename.");
         }
         return filename;
     }
 
+    /**
+     * Obtains a filename from the headers.
+     *
+     * <p>Obtains a filename from headers, if failed, returns null.
+     *
+     * @param headers headers to obtain a filename.
+     * @return filename
+     */
     private String obtainFilename(Headers headers) {
         if (headers == null) {
             return null;
@@ -95,6 +140,14 @@ public class DownloadTask {
         }
     }
 
+    /**
+     * Obtains a filename from the uri.
+     *
+     * <p>Obtains a filename from the uri, if failed, returns null.
+     *
+     * @param uri uri to obtain a filename.
+     * @return filename
+     */
     private String obtainFilename(URI uri) {
         if (uri == null) {
             return null;
@@ -113,7 +166,7 @@ public class DownloadTask {
     }
 
     /**
-     * 下载进度
+     * Observable progress of this download task.
      *
      * @return observable progress
      */
@@ -122,7 +175,7 @@ public class DownloadTask {
     }
 
     /**
-     * 开始下载
+     * Starts this download task.
      *
      * @return observable file
      */
@@ -137,35 +190,75 @@ public class DownloadTask {
                         Preconditions.require(savePath.exists() || savePath.mkdirs(), new IOException("cannot mkdirs."));
                         File target = new File(savePath, filename);
                         OutputStream out = new FileOutputStream(target);
-                        IOUtils.transfer(stream, out);
-                        IOUtils.close(stream, out);
+                        IOHelper.transfer(stream, out);
+                        IOHelper.close(stream, out);
                         return target;
                     }
                 });
     }
 
+    /**
+     * Builder of {@link DownloadTask}
+     *
+     * @see DownloadTask
+     */
     public static class Builder {
+
+        /**
+         * Parent path to save file.
+         */
         File savePath;
+
+        /**
+         * Filename of download file.
+         */
         String filename;
+
+        /**
+         * Remote file URL.
+         */
         String url;
 
+        /**
+         * Sets the save path.
+         *
+         * @param savePath the specific save path
+         * @return current builder
+         */
         public Builder savePath(File savePath) {
             this.savePath = savePath;
             return this;
         }
 
+        /**
+         * Sets the filename.
+         *
+         * @param filename the specific filename
+         * @return current builder
+         */
         public Builder filename(String filename) {
             this.filename = filename;
             return this;
         }
 
+        /**
+         * Sets the url.
+         *
+         * @param url the specific url
+         * @return current builder
+         */
         public Builder url(String url) {
             this.url = url;
             return this;
         }
 
+        /**
+         * Builds a {@code DownloadTask} with this builder.
+         *
+         * @return {@code DownloadTask} instance
+         */
         public DownloadTask build() {
-            if (StringUtils.isBlank(url)) {
+            if (StringHelper.isBlank(url)) {
                 throw new IllegalArgumentException("url cannot be blank.");
             }
             if (savePath == null) {

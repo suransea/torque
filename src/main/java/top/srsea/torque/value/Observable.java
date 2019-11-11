@@ -17,18 +17,37 @@
 package top.srsea.torque.value;
 
 /**
- * Observable Property
+ * Observable property.
  *
  * @param <T> type of value
+ * @author sea
  */
 public class Observable<T> implements Property<T> {
+
+    /**
+     * Value of property.
+     */
     private T value;
+
+    /**
+     * Observer of property.
+     */
     private Observer<T> observer;
 
+    /**
+     * Constructs an instance with the value observer.
+     *
+     * @param observer the specific value observer
+     */
     public Observable(Observer<T> observer) {
         this.observer = observer;
     }
 
+    /**
+     * Sets the property value, and notifies the observer.
+     *
+     * @param value value to set
+     */
     @Override
     public void set(T value) {
         T last = this.value;
@@ -37,6 +56,11 @@ public class Observable<T> implements Property<T> {
         observer.onChange(this, last, value);
     }
 
+    /**
+     * Gets the property value.
+     *
+     * @return value
+     */
     @Override
     public T get() {
         return value;

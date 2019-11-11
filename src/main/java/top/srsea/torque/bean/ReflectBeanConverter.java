@@ -16,7 +16,6 @@
 
 package top.srsea.torque.bean;
 
-
 import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -26,17 +25,34 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 基于反射的Java Bean转换器
+ * Java bean converter base on reflect.
+ * Converting between java bean object and java {@link Map} object.
  *
- * @param <T>
+ * @param <T> class of bean
+ * @author sea
  */
 public class ReflectBeanConverter<T> implements BeanConverter<T> {
+
+    /**
+     * Class of bean.
+     */
     private Class<T> beanClass;
 
+    /**
+     * Constructs an instance with the specific bean class.
+     *
+     * @param beanClass class of bean
+     */
     public ReflectBeanConverter(Class<T> beanClass) {
         this.beanClass = beanClass;
     }
 
+    /**
+     * Returns a java bean parsed from map.
+     *
+     * @param map source map
+     * @return a java bean parsed from map
+     */
     @Override
     public T fromMap(@Nonnull Map<?, ?> map) {
         try {
@@ -58,6 +74,14 @@ public class ReflectBeanConverter<T> implements BeanConverter<T> {
         return null;
     }
 
+    /**
+     * Returns a java bean list parsed from map list.
+     * Loop call {@link BeanConverter#fromMap(Map)} until all the maps has been converted.
+     * Each failed conversion will be ignored.
+     *
+     * @param mapList source map list
+     * @return a java bean list parsed from map list
+     */
     @Override
     public List<T> fromMapList(@Nonnull List<? extends Map<?, ?>> mapList) {
         List<T> beanList = new ArrayList<>();
@@ -69,6 +93,12 @@ public class ReflectBeanConverter<T> implements BeanConverter<T> {
         return beanList;
     }
 
+    /**
+     * Returns a map contains properties of the specific bean.
+     *
+     * @param bean source bean
+     * @return a map contains properties of the specific bean.
+     */
     @Override
     public Map<String, Object> toMap(@Nonnull T bean) {
         Map<String, Object> map = new HashMap<>();
@@ -85,6 +115,14 @@ public class ReflectBeanConverter<T> implements BeanConverter<T> {
         return map;
     }
 
+    /**
+     * Returns a map list contains every map of bean from the bean list.
+     * Loop call {@link BeanConverter#toMap(Object)} until all the beans has been converted.
+     * Each failed conversion will be ignored.
+     *
+     * @param beanList source bean list
+     * @return a map list contains every map of bean from the bean list
+     */
     @Override
     public List<Map<String, Object>> toMapList(@Nonnull List<T> beanList) {
         List<Map<String, Object>> mapList = new ArrayList<>();

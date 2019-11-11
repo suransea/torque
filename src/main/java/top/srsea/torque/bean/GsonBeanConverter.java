@@ -24,35 +24,75 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 基于Gson的Java Bean转换器
+ * Java bean converter base on {@link Gson}.
+ * Converting between java bean object and java {@link Map} object.
  *
- * @param <T>
+ * @param <T> class of bean
+ * @author sea
+ * @see BeanConverter
  */
 public class GsonBeanConverter<T> implements BeanConverter<T> {
+
+    /**
+     * Class of bean.
+     */
     private Class<T> beanClass;
+
+    /**
+     * Gson instance for parse or generate json.
+     */
     private Gson gson = new Gson();
 
+    /**
+     * Constructs an instance with the specific bean class.
+     *
+     * @param beanClass class of bean
+     */
     public GsonBeanConverter(Class<T> beanClass) {
         this.beanClass = beanClass;
     }
 
+    /**
+     * Returns a java bean parsed from map.
+     *
+     * @param map source map
+     * @return a java bean parsed from map
+     */
     @Override
     public T fromMap(@Nonnull Map<?, ?> map) {
         return gson.fromJson(gson.toJsonTree(map), beanClass);
     }
 
+    /**
+     * Returns a java bean list parsed from map list.
+     *
+     * @param mapList source map list
+     * @return a java bean list parsed from map list
+     */
     @Override
     public List<T> fromMapList(@Nonnull List<? extends Map<?, ?>> mapList) {
         return gson.fromJson(gson.toJsonTree(mapList), new TypeToken<List<T>>() {
         }.getType());
     }
 
+    /**
+     * Returns a map contains properties of the specific bean.
+     *
+     * @param bean source bean
+     * @return a map contains properties of the specific bean.
+     */
     @Override
     public Map<String, Object> toMap(@Nonnull T bean) {
         return gson.fromJson(gson.toJsonTree(bean), new TypeToken<Map<String, Object>>() {
         }.getType());
     }
 
+    /**
+     * Returns a map list contains every map of bean from the bean list.
+     *
+     * @param beanList source bean list
+     * @return a map list contains every map of bean from the bean list
+     */
     @Override
     public List<Map<String, Object>> toMapList(@Nonnull List<T> beanList) {
         return gson.fromJson(gson.toJsonTree(beanList), new TypeToken<List<Map<String, Object>>>() {

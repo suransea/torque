@@ -21,18 +21,39 @@ import top.srsea.torque.function.Provider;
 import javax.annotation.Nonnull;
 
 /**
- * lazy property
+ * Lazy property.
  *
  * @param <T> type of value
+ * @author sea
+ * @see Property
  */
 public class Lazy<T> implements Property<T> {
+
+    /**
+     * Value of property.
+     */
     private volatile T value;
+
+    /**
+     * Provider of property value.
+     */
     private Provider<T> provider;
 
+    /**
+     * Constructs an instance with the value provider.
+     *
+     * @param provider the specific value provider
+     */
     public Lazy(@Nonnull Provider<T> provider) {
         this.provider = provider;
     }
 
+    /**
+     * Sets the property value.
+     *
+     * @param value value to set
+     * @deprecated don't change actual value of lazy property, unless you have to do this
+     */
     @Override
     @Deprecated
     public void set(T value) {
@@ -40,9 +61,9 @@ public class Lazy<T> implements Property<T> {
     }
 
     /**
-     * 获取值, 首次调用时从 provider 加载
+     * Gets the property value, load it from {@code provider} if called firstly.
      *
-     * @return value
+     * @return property value
      */
     @Override
     public T get() {

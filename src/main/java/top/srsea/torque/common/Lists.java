@@ -21,15 +21,18 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * List 工具
+ * List utilities.
+ *
+ * @author sea
  */
 public class Lists {
+
     /**
-     * 创建 ArrayList
+     * Creates a {@code ArrayList} contains the specific items, the initial capacity is length of items.
      *
-     * @param items 元素
-     * @param <T>   type
-     * @return arrayList contains items
+     * @param items the specific items
+     * @param <T>   type of item
+     * @return {@code ArrayList} contains the specific items
      */
     @SafeVarargs
     public static <T> List<T> of(T... items) {

@@ -17,20 +17,22 @@
 package top.srsea.torque.value;
 
 /**
- * 属性
+ * Property.
  *
  * @param <T> type of value
+ * @author sea
  */
 public interface Property<T> {
+
     /**
-     * setter
+     * Setter.
      *
      * @param value value to set
      */
     void set(T value);
 
     /**
-     * getter
+     * Getter.
      *
      * @return value
      */

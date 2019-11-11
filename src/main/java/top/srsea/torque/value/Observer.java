@@ -17,13 +17,15 @@
 package top.srsea.torque.value;
 
 /**
- * Property observer
+ * Property observer.
  *
  * @param <T> type of value
+ * @author sea
  */
 public interface Observer<T> {
+
     /**
-     * value changed
+     * Call this on value changed.
      *
      * @param property observable property
      * @param last     old value

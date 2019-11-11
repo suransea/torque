@@ -21,20 +21,30 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 过滤器链
+ * A chain of filters.
  *
- * @param <T>
+ * @param <T> class of target object
+ * @author sea
+ * @see Filter
  */
 public class Filters<T> implements Filter<T> {
+
+    /**
+     * A list contains all the filters.
+     */
     private List<Filter<? super T>> filterList = new ArrayList<>();
+
+    /**
+     * A value represents whether the chain has been canceled.
+     */
     private boolean canceled = false;
 
     /**
-     * 以若干过滤器创建链
+     * Create a {@code Filters} chain with several filters.
      *
-     * @param filters 过滤器
-     * @param <T>     应用对象类型
-     * @return 过滤器链
+     * @param filters filters array
+     * @param <T>     class of target object
+     * @return a {@code Filters} chain with several filters
      */
     @SafeVarargs
     public static <T> Filters<T> of(Filter<? super T>... filters) {
@@ -44,10 +54,10 @@ public class Filters<T> implements Filter<T> {
     }
 
     /**
-     * 在当前链上添加一个过滤器
+     * Adds a filter to the current chain.
      *
      * @param filter target filter
-     * @return 过滤器链
+     * @return current chain
      */
     public Filters<T> and(Filter<? super T> filter) {
         filterList.add(filter);
@@ -55,7 +65,7 @@ public class Filters<T> implements Filter<T> {
     }
 
     /**
-     * 将链应用给目标对象
+     * Applies the chain to the target object.
      *
      * @param t target object
      */
@@ -65,10 +75,10 @@ public class Filters<T> implements Filter<T> {
     }
 
     /**
-     * 将链应用给目标对象
+     * Applies the chain to the target object, an exception will be applied for the throwable filter.
      *
      * @param t               target object
-     * @param throwableFilter 错误过滤器: exception将通过此对象
+     * @param throwableFilter exception will be applied for the throwable filter
      */
     public void apply(T t, Filter<Throwable> throwableFilter) {
         canceled = false;
@@ -88,7 +98,7 @@ public class Filters<T> implements Filter<T> {
     }
 
     /**
-     * 取消链中后续过滤器的执行
+     * Marks this chain canceled.
      */
     public void cancel() {
         canceled = true;

@@ -19,13 +19,19 @@ package top.srsea.torque.common;
 import javax.annotation.Nullable;
 
 /**
- * 字符串工具
+ * String utilities.
+ *
+ * @author sea
  */
-public class StringUtils {
+public class StringHelper {
+
+    /**
+     * Char underline.
+     */
     private static final char UNDERLINE = '_';
 
     /**
-     * the str is null or ""
+     * Returns if the str is null or ""
      *
      * @param str source
      * @return true if is empty
@@ -35,7 +41,7 @@ public class StringUtils {
     }
 
     /**
-     * the content is blank
+     * Returns if the content is blank
      *
      * @param content source
      * @return true if is blank
@@ -45,7 +51,7 @@ public class StringUtils {
     }
 
     /**
-     * camelCase to snake_case
+     * Converts camelCase to snake_case
      *
      * @param content source
      * @return target
@@ -69,7 +75,7 @@ public class StringUtils {
     }
 
     /**
-     * snake_case to camelCase
+     * Converts snake_case to camelCase
      *
      * @param content source
      * @return target

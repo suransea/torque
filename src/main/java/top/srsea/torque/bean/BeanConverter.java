@@ -16,47 +16,50 @@
 
 package top.srsea.torque.bean;
 
-
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 
-
 /**
- * Java Bean转换器
+ * Java bean converter.
+ * Converting between java bean object and java {@link Map} object.
  *
- * @param <T>
+ * @param <T> class of bean
+ * @author sea
+ * @see GsonBeanConverter
+ * @see ReflectBeanConverter
  */
 public interface BeanConverter<T> {
+
     /**
-     * 将 map 解析为 Java bean
+     * Returns a java bean parsed from map.
      *
-     * @param map Source map
-     * @return Bean
+     * @param map source map
+     * @return a java bean parsed from map
      */
     T fromMap(@Nonnull Map<?, ?> map);
 
     /**
-     * 将 map list 解析为 Java bean list
+     * Returns a java bean list parsed from map list.
      *
-     * @param mapList Source map list
-     * @return Bean list
+     * @param mapList source map list
+     * @return a java bean list parsed from map list
      */
     List<T> fromMapList(@Nonnull List<? extends Map<?, ?>> mapList);
 
     /**
-     * 将 bean 转换为 map
+     * Returns a map contains properties of the specific bean.
      *
-     * @param bean Source bean
-     * @return map
+     * @param bean source bean
+     * @return a map contains properties of the specific bean.
      */
     Map<String, Object> toMap(@Nonnull T bean);
 
     /**
-     * 将 bean list 转换为 map list
+     * Returns a map list contains every map of bean from the bean list.
      *
-     * @param beanList Source bean list
-     * @return map list
+     * @param beanList source bean list
+     * @return a map list contains every map of bean from the bean list
      */
     List<Map<String, Object>> toMapList(@Nonnull List<T> beanList);
 }

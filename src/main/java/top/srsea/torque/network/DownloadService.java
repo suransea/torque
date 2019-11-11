@@ -22,7 +22,20 @@ import retrofit2.http.GET;
 import retrofit2.http.Streaming;
 import retrofit2.http.Url;
 
+/**
+ * An interface for retrofits to download file.
+ *
+ * @author sea
+ */
 public interface DownloadService {
+
+    /**
+     * Downloads the file of the specific url.
+     *
+     * @param url url of a remote file
+     * @return observable ResponseBody
+     * @see retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+     */
     @GET
     @Streaming
     Observable<ResponseBody> download(@Url String url);

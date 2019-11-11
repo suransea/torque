@@ -17,13 +17,15 @@
 package top.srsea.torque.common;
 
 /**
- * 过滤器
+ * Represents an operation that apply an action for the specific object.
  *
- * @param <T>
+ * @param <T> class of target object
+ * @author sea
  */
 public interface Filter<T> {
+
     /**
-     * 为对象t应用动作
+     * Applies action for the specific object.
      *
      * @param t target object
      * @throws Exception all exceptions
