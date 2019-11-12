@@ -2,9 +2,6 @@
 
 [![](https://jitpack.io/v/suransea/torque.svg)](https://jitpack.io/#suransea/torque)
 
-
-##### Java 常用工具合集
-
 #### Maven
 
 Step 1. Add the JitPack repository to your build file
