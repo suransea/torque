@@ -1,8 +1,8 @@
-## Torque
+# Torque
 
 [![](https://jitpack.io/v/suransea/torque.svg)](https://jitpack.io/#suransea/torque)
 
-#### Maven
+## Maven
 
 Step 1. Add the JitPack repository to your build file
 
@@ -23,7 +23,7 @@ Step 2. Add the dependency
 
 
 
-#### Gradle
+## Gradle
 
 
 Step 1. Add the JitPack repository to your build file
