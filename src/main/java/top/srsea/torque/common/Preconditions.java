@@ -43,7 +43,7 @@ public class Preconditions {
      * @throws RuntimeException expression is {@code false}
      */
     public static void require(boolean exp) {
-        require(exp, "A Failed requirement.");
+        require(exp, "A failed requirement.");
     }
 
     /**

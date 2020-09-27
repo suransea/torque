@@ -20,54 +20,41 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 
 /**
- * A value wrapper for class or its null.
- * Useful for a null value, but require a non-null value.
+ * A value wrapper.
  *
  * @param <T> Type of wrapped value
  */
-public class NullableObject<T> {
-    private T object;
+public class ObjectWrapper<T> {
+    private final T object;
 
     /**
      * Constructs an instance wrapper the value.
      *
      * @param object the value to be wrapper
      */
-    public NullableObject(T object) {
+    public ObjectWrapper(T object) {
         this.object = object;
     }
 
     /**
-     * Returns a {@code NullableObject} wrapping an object.
+     * Returns a {@code ObjectWrapper} wrapping an object.
      *
      * @param object value to wrap
      * @param <T>    type of value
-     * @return a {@code NullableObject} with the specific object
+     * @return a {@code ObjectWrapper} with the specific object
      */
-    public static <T> NullableObject<T> of(T object) {
-        return new NullableObject<>(object);
+    public static <T> ObjectWrapper<T> of(T object) {
+        return new ObjectWrapper<>(object);
     }
 
     /**
-     * Returns a {@code NullableObject} wrapping a null.
-     *
-     * @param objClass class of this null value
-     * @param <T>      type of value
-     * @return a {@code NullableObject} wrapping a null
-     */
-    public static <T> NullableObject<T> nullOfClass(Class<T> objClass) {
-        return new NullableObject<>(null);
-    }
-
-    /**
-     * Returns a {@code NullableObject} wrapping a null, the class will be inferred.
-     * If you want to set the class manually, use {@link NullableObject#nullOfClass(Class)}.
+     * Returns a {@code ObjectWrapper} wrapping a null
      *
      * @param <T> type of value
-     * @return a {@code NullableObject} wrapping a null
+     * @return a {@code ObjectWrapper} wrapping a null
      */
-    public static <T> NullableObject<T> nullObject() {
-        return new NullableObject<>(null);
+    public static <T> ObjectWrapper<T> empty() {
+        return new ObjectWrapper<>(null);
     }
 
     /**
@@ -109,7 +96,7 @@ public class NullableObject<T> {
     }
 
     /**
-     * Just inner value equals to another inner value of {@code NullableObject}, or both of them are null.
+     * Just inner value equals to another inner value of {@code ObjectWrapper}, or both of them are null.
      *
      * @param obj an object to be tested for equality
      * @return {code true} if the other object is "equal to" this object
@@ -119,9 +106,9 @@ public class NullableObject<T> {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof NullableObject)) {
+        if (!(obj instanceof ObjectWrapper)) {
             return false;
         }
-        return Objects.equals(object, ((NullableObject) obj).object);
+        return Objects.equals(object, ((ObjectWrapper<?>) obj).object);
     }
 }

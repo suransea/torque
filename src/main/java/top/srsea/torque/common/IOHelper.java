@@ -28,6 +28,8 @@ import java.io.OutputStream;
  * @author sea
  */
 public class IOHelper {
+    private static final int DEFAULT_BUFFER_SIZE = 4096;
+
     private IOHelper() {
     }
 
@@ -54,20 +56,20 @@ public class IOHelper {
      * @throws IOException if an I/O error occurs
      */
     public static void transfer(@Nonnull InputStream in, @Nonnull OutputStream out) throws IOException {
-        transfer(in, out, 4096);
+        transfer(in, out, DEFAULT_BUFFER_SIZE);
     }
 
     /**
      * Writes data from the input stream to the output stream, using the specified buffer size.
      *
-     * @param in      source
-     * @param out     target
-     * @param bufSize buffer size, must be positive
+     * @param in         source
+     * @param out        target
+     * @param bufferSize buffer size, must be positive
      * @throws IOException if an I/O error occurs
      */
-    public static void transfer(@Nonnull InputStream in, @Nonnull OutputStream out, int bufSize) throws IOException {
-        Preconditions.require(bufSize > 0, "buffer size must be positive.");
-        byte[] buf = new byte[bufSize];
+    public static void transfer(@Nonnull InputStream in, @Nonnull OutputStream out, int bufferSize) throws IOException {
+        Preconditions.require(bufferSize > 0, "buffer size must be positive.");
+        byte[] buf = new byte[bufferSize];
         int read;
         while ((read = in.read(buf)) != -1) {
             out.write(buf, 0, read);

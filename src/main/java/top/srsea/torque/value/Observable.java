@@ -32,7 +32,7 @@ public class Observable<T> implements Property<T> {
     /**
      * Observer of property.
      */
-    private Observer<T> observer;
+    private final Observer<T> observer;
 
     /**
      * Constructs an instance with the value observer.

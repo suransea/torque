@@ -36,7 +36,7 @@ public class RetrofitProvider {
     /**
      * Default OkHttpClient instance
      */
-    private OkHttpClient client;
+    private final OkHttpClient client;
 
     /**
      * Constructs an instance

@@ -17,6 +17,7 @@
 package top.srsea.torque.network;
 
 import io.reactivex.Observable;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Function;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
@@ -40,12 +41,12 @@ public class DownloadTask {
     /**
      * A progress subject to publish and subscribe.
      */
-    private Subject<Progress> progress;
+    private final Subject<Progress> progress;
 
     /**
      * Parent path to save file, default is {@code ${HOME}/Downloads}
      */
-    private File savePath;
+    private final File savePath;
 
     /**
      * Filename of download file, if empty, it will be obtained from response.
@@ -55,7 +56,7 @@ public class DownloadTask {
     /**
      * Remote file URL, required.
      */
-    private String url;
+    private final String url;
 
     /**
      * Constructs an instance with builder.
@@ -185,7 +186,7 @@ public class DownloadTask {
                 .download(url)
                 .map(new Function<ResponseBody, File>() {
                     @Override
-                    public File apply(ResponseBody responseBody) throws Exception {
+                    public File apply(@NonNull ResponseBody responseBody) throws Exception {
                         InputStream stream = responseBody.byteStream();
                         Preconditions.require(savePath.exists() || savePath.mkdirs(), new IOException("cannot mkdirs."));
                         File target = new File(savePath, filename);
