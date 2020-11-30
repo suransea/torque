@@ -16,8 +16,7 @@
 
 package top.srsea.torque.value;
 
-
-import top.srsea.torque.function.Provider;
+import top.srsea.torque.function.Function;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
@@ -38,7 +37,7 @@ public class Properties {
      * @param <T>      type of value
      * @return a lazy loaded property
      */
-    public static <T> Lazy<T> lazy(@Nonnull Provider<T> provider) {
+    public static <T> Lazy<T> lazy(@Nonnull Function<T> provider) {
         Objects.requireNonNull(provider, "provider require not null.");
         return new Lazy<>(provider);
     }

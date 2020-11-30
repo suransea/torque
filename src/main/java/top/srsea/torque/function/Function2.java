@@ -16,17 +16,6 @@
 
 package top.srsea.torque.function;
 
-/**
- * Represents a provider of results.
- *
- * @param <T> the type of results provided by this provider
- */
-public interface Provider<T> {
-
-    /**
-     * Gets a result.
-     *
-     * @return a result
-     */
-    T get();
+public interface Function2<T1, T2, R> {
+    R invoke(T1 t1, T2 t2);
 }
