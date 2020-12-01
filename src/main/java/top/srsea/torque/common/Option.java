@@ -36,10 +36,6 @@ public abstract class Option<T> implements Iterable<T> {
 
     /**
      * Returns Some(value), or None if the value is null.
-     *
-     * @param value value to wrap
-     * @param <T>   type of value
-     * @return Some(value) or None
      */
     public static <T> Option<T> from(@Nullable T value) {
         if (value == null) {
@@ -50,10 +46,6 @@ public abstract class Option<T> implements Iterable<T> {
 
     /**
      * Returns Some(value).
-     *
-     * @param value value to wrap
-     * @param <T>   type of value
-     * @return Some(value)
      */
     public static <T> Option<T> some(@Nonnull T value) {
         return new Some<>(value);
@@ -61,14 +53,19 @@ public abstract class Option<T> implements Iterable<T> {
 
     /**
      * Returns the None.
-     *
-     * @param <T> type of value
-     * @return None
      */
     public static <T> Option<T> none() {
         @SuppressWarnings("unchecked")
         Option<T> none = (Option<T>) None.INSTANCE;
         return none;
+    }
+
+    /**
+     * Returns the nested option value if it is not empty.
+     * Otherwise returns None.
+     */
+    public static <T> Option<T> flatten(Option<Option<T>> option) {
+        return option.isEmpty() ? Option.<T>none() : option.get();
     }
 
     /**
@@ -82,7 +79,6 @@ public abstract class Option<T> implements Iterable<T> {
     /**
      * Returns this option's value or the default value if empty.
      */
-    @Nullable
     public T getOr(T defaultValue) {
         return isEmpty() ? defaultValue : get();
     }

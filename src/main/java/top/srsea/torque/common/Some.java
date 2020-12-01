@@ -31,9 +31,7 @@ public final class Some<T> extends Option<T> {
     private final T value;
 
     /**
-     * Constructs an instance wrapper the value.
-     *
-     * @param value the value to be wrapper
+     * Constructs an Some with the value.
      */
     public Some(@Nonnull T value) {
         Objects.requireNonNull(value);
@@ -58,7 +56,7 @@ public final class Some<T> extends Option<T> {
         if (!(obj instanceof Some)) {
             return false;
         }
-        return Objects.equals(value, ((Some<?>) obj).value);
+        return value.equals(((Some<?>) obj).value);
     }
 
     @Nonnull
@@ -78,10 +76,12 @@ public final class Some<T> extends Option<T> {
         return new Iterator<T>() {
             private boolean hasNext = true;
 
+            @Override
             public boolean hasNext() {
                 return hasNext;
             }
 
+            @Override
             public T next() {
                 if (hasNext) {
                     hasNext = false;
@@ -90,6 +90,7 @@ public final class Some<T> extends Option<T> {
                 throw new NoSuchElementException();
             }
 
+            @Override
             public void remove() {
                 throw new UnsupportedOperationException();
             }
