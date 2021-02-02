@@ -16,7 +16,7 @@
 
 package top.srsea.torque.value;
 
-import top.srsea.torque.function.Function;
+import top.srsea.torque.function.Supplier;
 
 import javax.annotation.Nonnull;
 
@@ -37,14 +37,14 @@ public class Lazy<T> implements Property<T> {
     /**
      * Provider of property value.
      */
-    private Function<T> provider;
+    private Supplier<T> provider;
 
     /**
      * Constructs an instance with the value provider.
      *
      * @param provider the specific value provider
      */
-    public Lazy(@Nonnull Function<T> provider) {
+    public Lazy(@Nonnull Supplier<T> provider) {
         this.provider = provider;
     }
 
@@ -72,7 +72,7 @@ public class Lazy<T> implements Property<T> {
             synchronized (this) {
                 tmp = value;
                 if (tmp == null) {
-                    value = provider.invoke();
+                    value = provider.get();
                     provider = null;
                 }
             }

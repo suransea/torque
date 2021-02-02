@@ -16,6 +16,6 @@
 
 package top.srsea.torque.function;
 
-public interface Function<R> {
-    R invoke();
+public interface Supplier<T> {
+    T get();
 }

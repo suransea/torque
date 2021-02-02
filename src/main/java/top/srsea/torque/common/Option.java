@@ -17,21 +17,23 @@
 package top.srsea.torque.common;
 
 import top.srsea.torque.function.Consumer;
-import top.srsea.torque.function.Function;
 import top.srsea.torque.function.Function1;
 import top.srsea.torque.function.Function2;
+import top.srsea.torque.function.Supplier;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
 /**
  * A optional value.
- *
- * @param <T> Type of wrapped value
  */
 public abstract class Option<T> implements Iterable<T> {
 
-    /*package-private*/ Option() {
+    private Option() {
     }
 
     /**
@@ -69,7 +71,7 @@ public abstract class Option<T> implements Iterable<T> {
     }
 
     /**
-     * Returns the option's value.
+     * Returns this option's value.
      *
      * @throws java.util.NoSuchElementException if empty
      */
@@ -79,23 +81,15 @@ public abstract class Option<T> implements Iterable<T> {
     /**
      * Returns this option's value or the default value if empty.
      */
-    public T getOr(T defaultValue) {
+    public T or(T defaultValue) {
         return isEmpty() ? defaultValue : get();
     }
 
     /**
-     * Returns this option's value or null if empty.
+     * Returns this option's value or the value from supplier if empty.
      */
-    @Nullable
-    public T getOrNull() {
-        return isEmpty() ? null : get();
-    }
-
-    /**
-     * Returns this option's value or the value from provider if empty.
-     */
-    public T getOrElse(Function<? extends T> provider) {
-        return isEmpty() ? provider.invoke() : get();
+    public T or(Supplier<? extends T> supplier) {
+        return isEmpty() ? supplier.get() : get();
     }
 
     /**
@@ -106,10 +100,18 @@ public abstract class Option<T> implements Iterable<T> {
     }
 
     /**
-     * Returns this option or the option from provider if empty.
+     * Returns this option's value or null if empty.
      */
-    public Option<T> orElse(Function<? extends Option<T>> provider) {
-        return isEmpty() ? provider.invoke() : this;
+    @Nullable
+    public T orNull() {
+        return isEmpty() ? null : get();
+    }
+
+    /**
+     * Returns this option or the option from supplier if empty.
+     */
+    public Option<T> orElse(Supplier<? extends Option<T>> supplier) {
+        return isEmpty() ? supplier.get() : this;
     }
 
     /**
@@ -177,8 +179,8 @@ public abstract class Option<T> implements Iterable<T> {
     /**
      * Returns operation(initialValue, value) or initialValue if empty.
      */
-    public <U> U fold(U initialValue, Function2<U, T, U> operation) {
-        return isEmpty() ? initialValue : operation.invoke(initialValue, get());
+    public <U> U fold(U initialValue, Function1<? super T, ? extends U> operation) {
+        return isEmpty() ? initialValue : operation.invoke(get());
     }
 
     /**
@@ -193,7 +195,7 @@ public abstract class Option<T> implements Iterable<T> {
     /**
      * Performs the given action for value if not empty, and return this option.
      */
-    public Option<T> tap(Consumer<? super T> action) {
+    public Option<T> onEach(Consumer<? super T> action) {
         foreach(action);
         return this;
     }
@@ -213,14 +215,135 @@ public abstract class Option<T> implements Iterable<T> {
     }
 
     /**
-     * Returns if the option is None.
+     * Returns if this option is None.
      */
     public abstract boolean isEmpty();
 
     /**
-     * Returns if the option is Some.
+     * Returns if this option is Some.
      */
     public boolean isNotEmpty() {
         return !isEmpty();
+    }
+
+
+    /**
+     * `Some` represents existing values of type
+     *
+     * @param <T> value type
+     */
+    public static final class Some<T> extends Option<T> {
+        @Nonnull
+        private final T value;
+
+        /**
+         * Constructs an Some with the value.
+         */
+        public Some(@Nonnull T value) {
+            Objects.requireNonNull(value);
+            this.value = value;
+        }
+
+        @Override
+        public int hashCode() {
+            return value.hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return "Some(" + value.toString() + ")";
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (!(obj instanceof Some)) {
+                return false;
+            }
+            return value.equals(((Some<?>) obj).value);
+        }
+
+        @Nonnull
+        @Override
+        public T get() {
+            return value;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Nonnull
+        @Override
+        public Iterator<T> iterator() {
+            return new Iterator<T>() {
+                private boolean hasNext = true;
+
+                @Override
+                public boolean hasNext() {
+                    return hasNext;
+                }
+
+                @Override
+                public T next() {
+                    if (hasNext) {
+                        hasNext = false;
+                        return value;
+                    }
+                    throw new NoSuchElementException();
+                }
+
+                @Override
+                public void remove() {
+                    throw new UnsupportedOperationException();
+                }
+            };
+        }
+    }
+
+
+    /**
+     * `None` represents non-existent values
+     */
+    public static final class None extends Option<Object> {
+        public static final None INSTANCE = new None();
+
+        private None() {
+        }
+
+        @Override
+        public int hashCode() {
+            return 0;
+        }
+
+        @Override
+        public String toString() {
+            return "None";
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj instanceof None;
+        }
+
+        @Nonnull
+        @Override
+        public Object get() {
+            throw new NoSuchElementException("None.get");
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return true;
+        }
+
+        @Nonnull
+        @Override
+        public Iterator<Object> iterator() {
+            return Collections.emptyIterator();
+        }
     }
 }
