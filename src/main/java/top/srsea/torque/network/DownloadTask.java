@@ -27,6 +27,7 @@ import top.srsea.torque.common.Preconditions;
 import top.srsea.torque.common.StringHelper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.*;
 import java.net.URI;
 import java.net.URLDecoder;
@@ -59,6 +60,11 @@ public class DownloadTask {
     private final String url;
 
     /**
+     * OkHttpClient for download, create a normal instance if null.
+     */
+    private final OkHttpClient client;
+
+    /**
      * Constructs an instance with builder.
      *
      * @param builder the specific builder.
@@ -68,6 +74,7 @@ public class DownloadTask {
         savePath = builder.savePath;
         filename = builder.filename;
         url = builder.url;
+        client = builder.client;
     }
 
     /**
@@ -76,7 +83,7 @@ public class DownloadTask {
      * @return new {@code OkHttpClient} instance with progress observer
      */
     private OkHttpClient newOkHttpClient() {
-        return new OkHttpClient.Builder()
+        return (client == null ? new OkHttpClient.Builder() : client.newBuilder())
                 .addInterceptor(new Interceptor() {
                     @Nonnull
                     @Override
@@ -130,7 +137,7 @@ public class DownloadTask {
             return null;
         }
         try {
-            String encodedFilename = contentDisposition.substring(contentDisposition.indexOf(mark) + 9);
+            String encodedFilename = contentDisposition.substring(contentDisposition.indexOf(mark) + mark.length());
             String filename = URLDecoder.decode(encodedFilename, "UTF-8").trim();
             if (filename.startsWith("\"") && filename.endsWith("\"")) {
                 filename = filename.substring(1, filename.length() - 1);
@@ -221,12 +228,17 @@ public class DownloadTask {
         String url;
 
         /**
+         * OkHttpClient for download.
+         */
+        OkHttpClient client;
+
+        /**
          * Sets the save path.
          *
          * @param savePath the specific save path
          * @return current builder
          */
-        public Builder savePath(File savePath) {
+        public Builder savePath(@Nullable File savePath) {
             this.savePath = savePath;
             return this;
         }
@@ -237,7 +249,7 @@ public class DownloadTask {
          * @param filename the specific filename
          * @return current builder
          */
-        public Builder filename(String filename) {
+        public Builder filename(@Nullable String filename) {
             this.filename = filename;
             return this;
         }
@@ -248,8 +260,19 @@ public class DownloadTask {
          * @param url the specific url
          * @return current builder
          */
-        public Builder url(String url) {
+        public Builder url(@Nonnull String url) {
             this.url = url;
+            return this;
+        }
+
+        /**
+         * Sets the client.
+         *
+         * @param client the specific client
+         * @return current builder
+         */
+        public Builder client(@Nullable OkHttpClient client) {
+            this.client = client;
             return this;
         }
 
@@ -257,6 +280,7 @@ public class DownloadTask {
          * Builds a {@code DownloadTask} with this builder.
          *
          * @return {@code DownloadTask} instance
+         * @throws IllegalArgumentException if url is blank
          */
         public DownloadTask build() {
             if (StringHelper.isBlank(url)) {
