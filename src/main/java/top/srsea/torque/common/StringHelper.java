@@ -17,6 +17,8 @@
 package top.srsea.torque.common;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Iterator;
 
 /**
  * String utilities.
@@ -97,5 +99,34 @@ public class StringHelper {
             }
         }
         return result.toString();
+    }
+
+    /**
+     * Joins a iterable to a string with the delimiter.
+     */
+    public static String join(CharSequence delimiter, Iterable<?> iterable) {
+        if (iterable == null) {
+            return null;
+        }
+        Iterator<?> iterator = iterable.iterator();
+        if (!iterator.hasNext()) {
+            return "";
+        }
+        if (delimiter == null) {
+            delimiter = "";
+        }
+        StringBuilder builder = new StringBuilder(String.valueOf(iterator.next()));
+        while (iterator.hasNext()) {
+            builder.append(delimiter);
+            builder.append(iterator.next());
+        }
+        return builder.toString();
+    }
+
+    /**
+     * Joins elements to a string with the delimiter.
+     */
+    public static String join(CharSequence delimiter, Object... elements) {
+        return join(delimiter, Arrays.asList(elements));
     }
 }
