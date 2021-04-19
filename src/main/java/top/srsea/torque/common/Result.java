@@ -146,6 +146,7 @@ public abstract class Result<T> {
     /**
      * Returns the result's error, or null if the result is Success.
      */
+    @Nullable
     public Throwable errorOrNull() {
         return isFailure() ? acquireError() : null;
     }
