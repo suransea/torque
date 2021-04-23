@@ -6,7 +6,7 @@
 
     <groupId>com.github.suransea</groupId>
     <artifactId>torque</artifactId>
-    <version>1.5.0</version>
+    <version>1.6.0</version>
     <packaging>jar</packaging>
 
     <name>Torque</name>
@@ -58,6 +58,7 @@
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
             <version>3.0.2</version>
+            <scope>compile</scope>
         </dependency>
 
     </dependencies>

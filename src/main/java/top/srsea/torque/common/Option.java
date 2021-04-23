@@ -290,28 +290,7 @@ public abstract class Option<T> implements Iterable<T> {
         @Nonnull
         @Override
         public Iterator<T> iterator() {
-            return new Iterator<T>() {
-                private boolean hasNext = true;
-
-                @Override
-                public boolean hasNext() {
-                    return hasNext;
-                }
-
-                @Override
-                public T next() {
-                    if (hasNext) {
-                        hasNext = false;
-                        return value;
-                    }
-                    throw new NoSuchElementException();
-                }
-
-                @Override
-                public void remove() {
-                    throw new UnsupportedOperationException();
-                }
-            };
+            return Iterators.singleton(value);
         }
     }
 
