@@ -167,6 +167,17 @@ public abstract class Option<T> implements Iterable<T> {
     }
 
     /**
+     * Returns true if this is empty or pred(value) returns false.
+     * Otherwise returns false.
+     */
+    public boolean none(Function1<? super T, Boolean> pred) {
+        if (isEmpty()) {
+            return true;
+        }
+        return !pred.invoke(get());
+    }
+
+    /**
      * Returns Some(zipper(this.value, that.value)) or the None if this or that empty.
      */
     public <U, V> Option<V> zip(Option<U> that, Function2<? super T, ? super U, V> zipper) {

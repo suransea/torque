@@ -259,6 +259,28 @@ public abstract class Result<T> {
     }
 
     /**
+     * Returns true if the result is Failure or pred(value) returns false.
+     * Otherwise returns false.
+     */
+    public boolean none(Function1<? super T, Boolean> pred) {
+        if (isFailure()) {
+            return true;
+        }
+        return !pred.invoke(acquireValue());
+    }
+
+    /**
+     * Returns true if the result is Success or pred(value) returns false.
+     * Otherwise returns false.
+     */
+    public boolean noneError(Function1<Throwable, Boolean> pred) {
+        if (isSuccess()) {
+            return true;
+        }
+        return !pred.invoke(acquireError());
+    }
+
+    /**
      * Performs the given action for value if is Success, and return this result.
      */
     public Result<T> onSuccess(Consumer<? super T> action) {
