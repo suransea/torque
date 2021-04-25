@@ -71,6 +71,18 @@ public abstract class Option<T> implements Iterable<T> {
     }
 
     /**
+     * Returns if this option is None.
+     */
+    public abstract boolean isEmpty();
+
+    /**
+     * Returns if this option is Some.
+     */
+    public boolean isNotEmpty() {
+        return !isEmpty();
+    }
+
+    /**
      * Returns this option's value.
      *
      * @throws java.util.NoSuchElementException if empty
@@ -195,20 +207,20 @@ public abstract class Option<T> implements Iterable<T> {
     }
 
     /**
+     * Performs the given action for value if not empty, and return this option.
+     */
+    public Option<T> onEach(Consumer<? super T> action) {
+        foreach(action);
+        return this;
+    }
+
+    /**
      * Performs the given action for value if not empty.
      */
     public void foreach(Consumer<? super T> action) {
         if (isNotEmpty()) {
             action.accept(get());
         }
-    }
-
-    /**
-     * Performs the given action for value if not empty, and return this option.
-     */
-    public Option<T> onEach(Consumer<? super T> action) {
-        foreach(action);
-        return this;
     }
 
     /**
@@ -223,18 +235,6 @@ public abstract class Option<T> implements Iterable<T> {
      */
     public int size() {
         return isEmpty() ? 0 : 1;
-    }
-
-    /**
-     * Returns if this option is None.
-     */
-    public abstract boolean isEmpty();
-
-    /**
-     * Returns if this option is Some.
-     */
-    public boolean isNotEmpty() {
-        return !isEmpty();
     }
 
 
@@ -262,7 +262,7 @@ public abstract class Option<T> implements Iterable<T> {
 
         @Override
         public String toString() {
-            return "Some(" + value.toString() + ")";
+            return "Some(" + value + ")";
         }
 
         @Override

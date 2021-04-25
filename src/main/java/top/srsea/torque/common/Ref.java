@@ -78,25 +78,17 @@ public final class Ref<T> implements Iterable<T> {
         this.value = value;
     }
 
-    public boolean isEmpty() {
-        return false;
-    }
-
-    public int size() {
-        return 1;
-    }
-
     public boolean contains(T elem) {
         return Objects.equals(value, elem);
-    }
-
-    public void foreach(Consumer<? super T> action) {
-        action.accept(value);
     }
 
     public Ref<T> onEach(Consumer<? super T> action) {
         foreach(action);
         return this;
+    }
+
+    public void foreach(Consumer<? super T> action) {
+        action.accept(value);
     }
 
     public <U> Ref<U> map(Function1<? super T, ? extends U> mapper) {
