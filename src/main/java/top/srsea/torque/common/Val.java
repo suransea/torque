@@ -19,29 +19,22 @@ package top.srsea.torque.common;
 import top.srsea.torque.function.Consumer;
 import top.srsea.torque.function.Function1;
 import top.srsea.torque.function.Function2;
-import top.srsea.torque.value.Property;
 
 import javax.annotation.Nonnull;
 import java.util.Iterator;
 import java.util.Objects;
 
-public final class Ref<T> implements Iterable<T>, Property<T> {
-    private T value;
+public final class Val<T> implements Iterable<T> {
+    @Nonnull
+    private final T value;
 
-    public Ref() {
-        this.value = null;
-    }
-
-    public Ref(T value) {
+    public Val(@Nonnull T value) {
+        Objects.requireNonNull(value);
         this.value = value;
     }
 
-    public static <T> Ref<T> of(T value) {
-        return new Ref<>(value);
-    }
-
-    public static <T> Ref<T> ofNull() {
-        return new Ref<>();
+    public static <T> Val<T> of(T value) {
+        return new Val<>(value);
     }
 
     @Nonnull
@@ -52,12 +45,12 @@ public final class Ref<T> implements Iterable<T>, Property<T> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(value);
+        return value.hashCode();
     }
 
     @Override
     public String toString() {
-        return "Ref(" + value + ")";
+        return "Val(" + value + ")";
     }
 
     @Override
@@ -65,27 +58,22 @@ public final class Ref<T> implements Iterable<T>, Property<T> {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof Ref)) {
+        if (!(obj instanceof Val)) {
             return false;
         }
-        return Objects.equals(value, ((Ref<?>) obj).value);
+        return value.equals(((Val<?>) obj).value);
     }
 
-    @Override
+    @Nonnull
     public T get() {
         return value;
     }
 
-    @Override
-    public void set(T value) {
-        this.value = value;
-    }
-
     public boolean contains(T elem) {
-        return Objects.equals(value, elem);
+        return value.equals(elem);
     }
 
-    public Ref<T> onEach(Consumer<? super T> action) {
+    public Val<T> onEach(Consumer<? super T> action) {
         foreach(action);
         return this;
     }
@@ -94,16 +82,16 @@ public final class Ref<T> implements Iterable<T>, Property<T> {
         action.accept(value);
     }
 
-    public <U> Ref<U> map(Function1<? super T, ? extends U> mapper) {
-        return new Ref<>(mapper.invoke(value));
+    public <U> Val<U> map(Function1<? super T, ? extends U> mapper) {
+        return new Val<>(mapper.invoke(value));
     }
 
-    public <U> Ref<U> flatMap(Function1<? super T, ? extends Ref<U>> mapper) {
+    public <U> Val<U> flatMap(Function1<? super T, ? extends Val<U>> mapper) {
         return mapper.invoke(value);
     }
 
-    public <U, V> Ref<V> zip(Ref<U> that, Function2<? super T, ? super U, V> zipper) {
-        return new Ref<>(zipper.invoke(value, that.value));
+    public <U, V> Val<V> zip(Val<U> that, Function2<? super T, ? super U, V> zipper) {
+        return new Val<>(zipper.invoke(value, that.value));
     }
 
     public <U> U fold(Function1<? super T, ? extends U> operation) {
