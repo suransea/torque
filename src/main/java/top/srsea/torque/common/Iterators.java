@@ -19,7 +19,6 @@ package top.srsea.torque.common;
 import top.srsea.torque.function.Function1;
 import top.srsea.torque.function.Supplier;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -53,8 +52,25 @@ public class Iterators {
     }
 
     @SafeVarargs
-    public static <E> Iterator<E> of(E... elems) {
-        return Arrays.asList(elems).iterator();
+    public static <E> Iterator<E> of(final E... elems) {
+        return new Iterator<E>() {
+            private int cursor = 0;
+
+            public boolean hasNext() {
+                return cursor != elems.length;
+            }
+
+            public E next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                return elems[cursor++];
+            }
+
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        };
     }
 
     public static <E> Iterator<E> generate(final E init, final Function1<E, Boolean> cond, final Function1<E, E> iterate) {
