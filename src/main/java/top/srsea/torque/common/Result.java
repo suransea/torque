@@ -17,11 +17,10 @@
 package top.srsea.torque.common;
 
 import top.srsea.torque.function.Consumer;
-import top.srsea.torque.function.Function1;
+import top.srsea.torque.function.Function;
+import top.srsea.torque.function.Supplier;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 
@@ -72,50 +71,39 @@ public abstract class Result<T> {
     }
 
     /**
-     * Returns the result's value
-     *
-     * @throws NoSuchElementException if the result is Failure.
+     * Returns the result's value option.
      */
-    @Nonnull
-    public abstract T value();
+    public Option<T> value() {
+        return isSuccess() ? Option.some(requireValue()) : Option.<T>none();
+    }
 
     /**
-     * Returns the result's error.
-     *
-     * @throws NoSuchElementException if the result is Success.
+     * Returns the result's error option.
      */
-    @Nonnull
-    public abstract Throwable error();
+    public Option<Throwable> error() {
+        return isSuccess() ? Option.<Throwable>none() : Option.some(requireError());
+    }
 
     /**
      * Returns the result's value.
      *
      * @throws E if the result is Failure.
-     *           This method throws Throwable by default, can be specific with a generic type param,
-     *           such as RuntimeException if you don't want to handle the error.
+     *           This method throws Throwable by default, can be specific with a generic type param.
      */
     @Nonnull
+    @SuppressWarnings("unchecked")
     public <E extends Throwable> T get() throws E {
         if (isSuccess()) {
-            return value();
+            return requireValue();
         }
-        @SuppressWarnings("unchecked")
-        E error = (E) error();
-        throw error;
-    }
-
-    /**
-     * Returns the result's value, or defaultValue if the result is Failure.
-     */
-    public T or(T defaultValue) {
-        return isSuccess() ? value() : defaultValue;
+        throw (E) requireError();
     }
 
     /**
      * Returns the result's value, or the value from the mapper if the result is Failure.
      */
-    public T or(Function1<Throwable, ? extends T> mapper) {
-        return isSuccess() ? value() : mapper.invoke(error());
+    public T or(Function<Throwable, ? extends T> mapper) {
+        return isSuccess() ? requireValue() : mapper.invoke(requireError());
     }
 
     /**
@@ -126,78 +114,45 @@ public abstract class Result<T> {
     }
 
     /**
-     * Returns the result's value, or null if the result is Failure.
+     * Returns this result, or the result from supplier if the result is Failure.
      */
-    @Nullable
-    public T orNull() {
-        return isSuccess() ? value() : null;
-    }
-
-    /**
-     * Returns the result's error, or null if the result is Success.
-     */
-    @Nullable
-    public Throwable errorOrNull() {
-        return isFailure() ? error() : null;
-    }
-
-    /**
-     * Returns this result, or the result from mapper if the result is Failure.
-     */
-    public Result<T> orElse(Function1<Throwable, ? extends Result<T>> mapper) {
-        return isSuccess() ? this : mapper.invoke(error());
-    }
-
-    /**
-     * Returns Some(value), or None if the result is Failure.
-     */
-    public Option<T> orNone() {
-        return Option.from(orNull());
-    }
-
-    /**
-     * Returns Some(error), or None if the result is Success.
-     */
-    public Option<Throwable> errorOrNone() {
-        return Option.from(errorOrNull());
+    public Result<T> orElse(Supplier<? extends Result<T>> supplier) {
+        return isSuccess() ? this : supplier.get();
     }
 
     /**
      * Returns Success(mapper(value)), or this result if is Failure.
      */
-    public <U> Result<U> map(Function1<? super T, ? extends U> mapper) {
-        return isSuccess() ? success(mapper.invoke(value())) : (Failure<U>) this;
+    public <U> Result<U> map(Function<? super T, ? extends U> mapper) {
+        return isSuccess() ? success(mapper.invoke(requireValue())) : (Failure<U>) this;
     }
 
     /**
      * Returns Failure(mapper(error)), or this result if is Success.
      */
-    public Result<T> mapError(Function1<Throwable, ? extends Throwable> mapper) {
-        return isSuccess() ? this : Result.<T>failure(mapper.invoke(error()));
+    public Result<T> mapError(Function<Throwable, ? extends Throwable> mapper) {
+        return isSuccess() ? this : Result.<T>failure(mapper.invoke(requireError()));
     }
 
     /**
      * Returns mapper(value), or this result if is Failure.
      */
-    public <U> Result<U> flatMap(Function1<? super T, ? extends Result<U>> mapper) {
-        return isSuccess() ? mapper.invoke(value()) : (Failure<U>) this;
+    public <U> Result<U> flatMap(Function<? super T, ? extends Result<U>> mapper) {
+        return isSuccess() ? mapper.invoke(requireValue()) : (Failure<U>) this;
     }
 
     /**
      * Returns mapper(value), or this result if is Success.
-     * Same behavior as `orElse` but different semantics.
-     *
-     * @see Result#orElse(Function1)
      */
-    public Result<T> flatMapError(Function1<Throwable, ? extends Result<T>> mapper) {
-        return isSuccess() ? this : mapper.invoke(error());
+    public Result<T> flatMapError(Function<Throwable, ? extends Result<T>> mapper) {
+        return isSuccess() ? this : mapper.invoke(requireError());
     }
 
     /**
-     * Returns operation(value) or initialValue if empty.
+     * Returns value(value) or error(error) if is Failure.
      */
-    public <U> U fold(U initialValue, Function1<? super T, ? extends U> operation) {
-        return isFailure() ? initialValue : operation.invoke(value());
+    public <U> U fold(Function<? super T, ? extends U> value, Function<Throwable, ? extends U> error) {
+        return isSuccess() ? value.invoke(requireValue()) : error.invoke(requireError());
     }
 
     /**
@@ -205,7 +160,7 @@ public abstract class Result<T> {
      */
     public Result<T> onSuccess(Consumer<? super T> action) {
         if (isSuccess()) {
-            action.accept(value());
+            action.accept(requireValue());
         }
         return this;
     }
@@ -215,7 +170,7 @@ public abstract class Result<T> {
      */
     public Result<T> onError(Consumer<? super Throwable> action) {
         if (isFailure()) {
-            action.accept(error());
+            action.accept(requireError());
         }
         return this;
     }
@@ -225,9 +180,9 @@ public abstract class Result<T> {
      */
     public void match(Consumer<? super T> success, Consumer<Throwable> error) {
         if (isSuccess()) {
-            success.accept(value());
+            success.accept(requireValue());
         } else {
-            error.accept(error());
+            error.accept(requireError());
         }
     }
 
@@ -235,73 +190,15 @@ public abstract class Result<T> {
      * Tests whether this result contains a given value as an element.
      */
     public boolean contains(T elem) {
-        return isSuccess() && value().equals(elem);
+        return isSuccess() && requireValue().equals(elem);
     }
 
-    /**
-     * Returns false if the result is Failure or pred(value) returns false.
-     * Otherwise returns true.
-     */
-    public boolean any(Function1<? super T, Boolean> pred) {
-        if (isFailure()) {
-            return false;
-        }
-        return pred.invoke(value());
+    private T requireValue() {
+        return ((Success<T>) this).value;
     }
 
-    /**
-     * Returns false if the result is Success or pred(error) returns false.
-     * Otherwise returns true.
-     */
-    public boolean anyError(Function1<Throwable, Boolean> pred) {
-        if (isSuccess()) {
-            return false;
-        }
-        return pred.invoke(error());
-    }
-
-    /**
-     * Returns true if the result is Failure or pred(value) returns true.
-     * Otherwise returns false.
-     */
-    public boolean all(Function1<? super T, Boolean> pred) {
-        if (isFailure()) {
-            return true;
-        }
-        return pred.invoke(value());
-    }
-
-    /**
-     * Returns true if the result is Success or pred(value) returns true.
-     * Otherwise returns false.
-     */
-    public boolean allError(Function1<Throwable, Boolean> pred) {
-        if (isSuccess()) {
-            return true;
-        }
-        return pred.invoke(error());
-    }
-
-    /**
-     * Returns true if the result is Failure or pred(value) returns false.
-     * Otherwise returns false.
-     */
-    public boolean none(Function1<? super T, Boolean> pred) {
-        if (isFailure()) {
-            return true;
-        }
-        return !pred.invoke(value());
-    }
-
-    /**
-     * Returns true if the result is Success or pred(value) returns false.
-     * Otherwise returns false.
-     */
-    public boolean noneError(Function1<Throwable, Boolean> pred) {
-        if (isSuccess()) {
-            return true;
-        }
-        return !pred.invoke(error());
+    private Throwable requireError() {
+        return ((Failure<T>) this).error;
     }
 
     /**
@@ -318,18 +215,6 @@ public abstract class Result<T> {
         @Override
         public boolean isSuccess() {
             return true;
-        }
-
-        @Nonnull
-        @Override
-        public T value() {
-            return value;
-        }
-
-        @Nonnull
-        @Override
-        public Throwable error() {
-            throw new NoSuchElementException("Success.error");
         }
 
         @Override
@@ -368,18 +253,6 @@ public abstract class Result<T> {
         @Override
         public boolean isSuccess() {
             return false;
-        }
-
-        @Nonnull
-        @Override
-        public T value() {
-            throw new NoSuchElementException("Failure.value");
-        }
-
-        @Nonnull
-        @Override
-        public Throwable error() {
-            return error;
         }
 
         @Override

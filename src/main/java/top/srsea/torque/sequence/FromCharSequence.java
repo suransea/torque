@@ -14,27 +14,32 @@
  * limitations under the License.
  */
 
-package top.srsea.torque.common;
+package top.srsea.torque.sequence;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class Iterators {
+public class FromCharSequence extends Sequence<Character> {
+    private final CharSequence sequence;
 
-    public static <E> Iterator<E> singleton(final E e) {
-        return new Iterator<E>() {
-            private boolean hasNext = true;
+    public FromCharSequence(CharSequence sequence) {
+        this.sequence = sequence;
+    }
+
+    @Override
+    public Iterator<Character> iterator() {
+        return new Iterator<Character>() {
+            private int cursor = 0;
 
             public boolean hasNext() {
-                return hasNext;
+                return cursor != sequence.length();
             }
 
-            public E next() {
-                if (hasNext) {
-                    hasNext = false;
-                    return e;
+            public Character next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
                 }
-                throw new NoSuchElementException();
+                return sequence.charAt(cursor++);
             }
 
             public void remove() {

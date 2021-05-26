@@ -14,8 +14,21 @@
  * limitations under the License.
  */
 
-package top.srsea.torque.function;
+package top.srsea.torque.sequence;
 
-public interface Function1<T, R> {
-    R invoke(T t);
+import top.srsea.torque.common.Iterators;
+
+import java.util.Iterator;
+
+public class Single<T> extends Sequence<T> {
+    private final T elem;
+
+    public Single(T elem) {
+        this.elem = elem;
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return Iterators.singleton(elem);
+    }
 }

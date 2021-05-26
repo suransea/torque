@@ -17,7 +17,7 @@
 package top.srsea.torque.common;
 
 import top.srsea.torque.function.Consumer;
-import top.srsea.torque.function.Function1;
+import top.srsea.torque.function.Function;
 import top.srsea.torque.function.Function2;
 import top.srsea.torque.function.Supplier;
 
@@ -56,18 +56,9 @@ public abstract class Option<T> implements Iterable<T> {
     /**
      * Returns the None.
      */
+    @SuppressWarnings("unchecked")
     public static <T> Option<T> none() {
-        @SuppressWarnings("unchecked")
-        Option<T> none = (Option<T>) None.INSTANCE;
-        return none;
-    }
-
-    /**
-     * Returns the nested option value if it is not empty.
-     * Otherwise returns None.
-     */
-    public static <T> Option<T> flatten(Option<Option<T>> option) {
-        return option.isEmpty() ? Option.<T>none() : option.get();
+        return (Option<T>) None.INSTANCE;
     }
 
     /**
@@ -129,14 +120,14 @@ public abstract class Option<T> implements Iterable<T> {
     /**
      * Returns Some(mapper(value)) or the None if empty.
      */
-    public <U> Option<U> map(Function1<? super T, ? extends U> mapper) {
+    public <U> Option<U> map(Function<? super T, ? extends U> mapper) {
         return isEmpty() ? Option.<U>none() : some(mapper.invoke(get()));
     }
 
     /**
      * Returns mapper(value) or the None if empty.
      */
-    public <U> Option<U> flatMap(Function1<? super T, ? extends Option<U>> mapper) {
+    public <U> Option<U> flatMap(Function<? super T, ? extends Option<U>> mapper) {
         return isEmpty() ? Option.<U>none() : mapper.invoke(get());
     }
 
@@ -144,7 +135,7 @@ public abstract class Option<T> implements Iterable<T> {
      * Returns this option if it is not empty and pred(value) returns ture.
      * Otherwise returns the None.
      */
-    public Option<T> filter(Function1<? super T, Boolean> pred) {
+    public Option<T> filter(Function<? super T, Boolean> pred) {
         return isEmpty() || pred.invoke(get()) ? this : Option.<T>none();
     }
 
@@ -152,7 +143,7 @@ public abstract class Option<T> implements Iterable<T> {
      * Returns this option if it is not empty and pred(value) returns false.
      * Otherwise returns the None.
      */
-    public Option<T> filterNot(Function1<? super T, Boolean> pred) {
+    public Option<T> filterNot(Function<? super T, Boolean> pred) {
         return isEmpty() || !pred.invoke(get()) ? this : Option.<T>none();
     }
 
@@ -160,7 +151,7 @@ public abstract class Option<T> implements Iterable<T> {
      * Returns false if this is empty or pred(value) returns false.
      * Otherwise returns true.
      */
-    public boolean any(Function1<? super T, Boolean> pred) {
+    public boolean any(Function<? super T, Boolean> pred) {
         if (isEmpty()) {
             return false;
         }
@@ -171,7 +162,7 @@ public abstract class Option<T> implements Iterable<T> {
      * Returns true if this is empty or pred(value) returns true.
      * Otherwise returns false.
      */
-    public boolean all(Function1<? super T, Boolean> pred) {
+    public boolean all(Function<? super T, Boolean> pred) {
         if (isEmpty()) {
             return true;
         }
@@ -182,7 +173,7 @@ public abstract class Option<T> implements Iterable<T> {
      * Returns true if this is empty or pred(value) returns false.
      * Otherwise returns false.
      */
-    public boolean none(Function1<? super T, Boolean> pred) {
+    public boolean none(Function<? super T, Boolean> pred) {
         if (isEmpty()) {
             return true;
         }
@@ -202,7 +193,7 @@ public abstract class Option<T> implements Iterable<T> {
     /**
      * Returns operation(initialValue, value) or initialValue if empty.
      */
-    public <U> U fold(U initialValue, Function1<? super T, ? extends U> operation) {
+    public <U> U fold(U initialValue, Function<? super T, ? extends U> operation) {
         return isEmpty() ? initialValue : operation.invoke(get());
     }
 

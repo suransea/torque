@@ -17,7 +17,7 @@
 package top.srsea.torque.common;
 
 import top.srsea.torque.function.Consumer;
-import top.srsea.torque.function.Function1;
+import top.srsea.torque.function.Function;
 import top.srsea.torque.function.Function2;
 import top.srsea.torque.value.Property;
 
@@ -94,11 +94,11 @@ public final class Ref<T> implements Iterable<T>, Property<T> {
         action.accept(value);
     }
 
-    public <U> Ref<U> map(Function1<? super T, ? extends U> mapper) {
+    public <U> Ref<U> map(Function<? super T, ? extends U> mapper) {
         return new Ref<>(mapper.invoke(value));
     }
 
-    public <U> Ref<U> flatMap(Function1<? super T, ? extends Ref<U>> mapper) {
+    public <U> Ref<U> flatMap(Function<? super T, ? extends Ref<U>> mapper) {
         return mapper.invoke(value);
     }
 
@@ -106,7 +106,7 @@ public final class Ref<T> implements Iterable<T>, Property<T> {
         return new Ref<>(zipper.invoke(value, that.value));
     }
 
-    public <U> U fold(Function1<? super T, ? extends U> operation) {
+    public <U> U fold(Function<? super T, ? extends U> operation) {
         return operation.invoke(value);
     }
 }

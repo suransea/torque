@@ -17,7 +17,7 @@
 package top.srsea.torque.common;
 
 import top.srsea.torque.function.Consumer;
-import top.srsea.torque.function.Function1;
+import top.srsea.torque.function.Function;
 import top.srsea.torque.function.Function2;
 
 import javax.annotation.Nonnull;
@@ -82,11 +82,11 @@ public final class Val<T> implements Iterable<T> {
         action.accept(value);
     }
 
-    public <U> Val<U> map(Function1<? super T, ? extends U> mapper) {
+    public <U> Val<U> map(Function<? super T, ? extends U> mapper) {
         return new Val<>(mapper.invoke(value));
     }
 
-    public <U> Val<U> flatMap(Function1<? super T, ? extends Val<U>> mapper) {
+    public <U> Val<U> flatMap(Function<? super T, ? extends Val<U>> mapper) {
         return mapper.invoke(value);
     }
 
@@ -94,7 +94,7 @@ public final class Val<T> implements Iterable<T> {
         return new Val<>(zipper.invoke(value, that.value));
     }
 
-    public <U> U fold(Function1<? super T, ? extends U> operation) {
+    public <U> U fold(Function<? super T, ? extends U> operation) {
         return operation.invoke(value);
     }
 }
