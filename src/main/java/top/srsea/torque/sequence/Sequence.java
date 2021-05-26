@@ -17,6 +17,7 @@
 package top.srsea.torque.sequence;
 
 import top.srsea.torque.common.Option;
+import top.srsea.torque.common.Preconditions;
 import top.srsea.torque.function.Consumer;
 import top.srsea.torque.function.Function;
 import top.srsea.torque.function.Function2;
@@ -188,11 +189,22 @@ public abstract class Sequence<T> implements Iterable<T> {
         return Option.some(last);
     }
 
+    public Option<T> at(int index) {
+        Preconditions.require(index >= 0, "index < 0");
+        Iterator<T> iterator = iterator();
+        for (int i = index; i > 0; --i, iterator.next()) {
+            if (!iterator.hasNext()) {
+                return Option.none();
+            }
+        }
+        return iterator.hasNext() ? Option.some(iterator.next()) : Option.<T>none();
+    }
+
     public <U> Sequence<U> map(Function<? super T, ? extends U> transform) {
         return new Map<>(this, transform);
     }
 
-    public <U> Sequence<U> flatMap(Function<? super T, ? extends Iterable<U>> transform) {
+    public <U> Sequence<U> flatMap(Function<? super T, ? extends Iterable<? extends U>> transform) {
         return new FlatMap<>(this, transform);
     }
 
@@ -212,6 +224,14 @@ public abstract class Sequence<T> implements Iterable<T> {
             return this;
         }
         return new Drop<>(this, n);
+    }
+
+    public <U, R> Sequence<R> zip(Iterable<U> other, Function2<? super T, ? super U, ? extends R> zipper) {
+        return new Zip<>(this, other, zipper);
+    }
+
+    public <U extends T> Sequence<T> concat(Iterable<U> other) {
+        return new Concat<>(this, other);
     }
 
     public Sequence<T> onEach(final Consumer<? super T> action) {
