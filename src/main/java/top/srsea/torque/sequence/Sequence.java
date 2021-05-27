@@ -26,6 +26,7 @@ import top.srsea.torque.function.Supplier;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 public abstract class Sequence<T> implements Iterable<T> {
 
@@ -232,6 +233,10 @@ public abstract class Sequence<T> implements Iterable<T> {
 
     public <U extends T> Sequence<T> concat(Iterable<U> other) {
         return new Concat<>(this, other);
+    }
+
+    public Sequence<List<T>> chunk(int n) {
+        return new Chunk<>(this, n);
     }
 
     public Sequence<T> onEach(final Consumer<? super T> action) {
