@@ -194,7 +194,7 @@ public abstract class Sequence<T> implements Iterable<T> {
         return Option.some(last);
     }
 
-    public Option<T> at(int index) {
+    public Option<T> nth(int index) {
         Preconditions.require(index >= 0, "index < 0");
         Iterator<T> iterator = iterator();
         for (int i = index; i > 0; --i, iterator.next()) {
@@ -264,5 +264,20 @@ public abstract class Sequence<T> implements Iterable<T> {
             collection.add(it);
         }
         return collection;
+    }
+
+    @Override
+    public String toString() {
+        Iterator<T> iterator = iterator();
+        if (!iterator.hasNext()) return "()";
+        StringBuilder builder = new StringBuilder("(");
+        while (iterator.hasNext()) {
+            builder.append(iterator.next());
+            if (iterator.hasNext()) {
+                builder.append(',').append(' ');
+            }
+        }
+        builder.append(')');
+        return builder.toString();
     }
 }
