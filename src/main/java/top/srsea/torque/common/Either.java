@@ -34,7 +34,7 @@ public abstract class Either<L, R> {
         return new Right<>(value);
     }
 
-    public static <T> T decay(Either<T, T> either) {
+    public static <T> T decay(Either<? extends T, ? extends T> either) {
         return either.get();
     }
 
@@ -57,17 +57,17 @@ public abstract class Either<L, R> {
         return !isLeft();
     }
 
-    public Either<L, R> onLeft(Consumer<L> consumer) {
+    public Either<L, R> onLeft(Consumer<? super L> consumer) {
         if (isLeft()) consumer.accept(requireLeft());
         return this;
     }
 
-    public Either<L, R> onRight(Consumer<R> consumer) {
+    public Either<L, R> onRight(Consumer<? super R> consumer) {
         if (isRight()) consumer.accept(requireRight());
         return this;
     }
 
-    public void match(Consumer<L> left, Consumer<R> right) {
+    public void match(Consumer<? super L> left, Consumer<? super R> right) {
         if (isLeft()) {
             left.accept(requireLeft());
         } else {
