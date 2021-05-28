@@ -41,6 +41,11 @@ public class List<T> extends Cons<T, List<T>> implements Iterable<T> {
         return create(elems, 0);
     }
 
+    @SafeVarargs
+    public static <T> List<T> list(T... elems) {
+        return create(elems, 0);
+    }
+
     @SuppressWarnings("unchecked")
     public static <T> List<T> nil() {
         return (List<T>) Nil.INSTANCE;
