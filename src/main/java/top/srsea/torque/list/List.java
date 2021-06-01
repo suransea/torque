@@ -51,15 +51,6 @@ public class List<T> extends Cons<T, List<T>> implements Iterable<T> {
         return (List<T>) Nil.INSTANCE;
     }
 
-    public static <T> List<T> flatten(List<List<T>> lists) {
-        return lists.foldRight(List.<T>nil(), new Function2<List<T>, List<T>, List<T>>() {
-            @Override
-            public List<T> invoke(List<T> x, List<T> y) {
-                return y.append(x);
-            }
-        });
-    }
-
     private static <T> List<T> create(T[] arr, int offset) {
         if (arr.length == offset) return nil();
         return new List<>(arr[offset], create(arr, offset + 1));
@@ -103,7 +94,12 @@ public class List<T> extends Cons<T, List<T>> implements Iterable<T> {
 
     public <U> List<U> flatMap(Function<? super T, ? extends List<U>> transform) {
         if (this == nil()) return nil();
-        return flatten(map(transform));
+        return map(transform).foldRight(List.<U>nil(), new Function2<List<U>, List<U>, List<U>>() {
+            @Override
+            public List<U> invoke(List<U> x, List<U> y) {
+                return x.append(y);
+            }
+        });
     }
 
     public List<T> filter(Function<? super T, Boolean> pred) {
@@ -117,9 +113,9 @@ public class List<T> extends Cons<T, List<T>> implements Iterable<T> {
         return cdr.foldLeft(op.invoke(init, car), op);
     }
 
-    public <R> R foldRight(R init, Function2<? super R, ? super T, ? extends R> op) {
+    public <R> R foldRight(R init, Function2<? super T, ? super R, ? extends R> op) {
         if (this == nil()) return init;
-        return op.invoke(cdr.foldRight(init, op), car);
+        return op.invoke(car, cdr.foldRight(init, op));
     }
 
     public List<T> reverse() {

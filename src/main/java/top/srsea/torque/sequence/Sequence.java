@@ -134,10 +134,6 @@ public abstract class Sequence<T> implements Iterable<T> {
         return new Generate<>(generator);
     }
 
-    public static <T> Sequence<T> flatten(Iterable<? extends Iterable<? extends T>> iterable) {
-        return new Flatten<>(iterable);
-    }
-
     public int count() {
         int count = 0;
         for (T ignored : this) {
