@@ -189,6 +189,7 @@ public class List<T> extends Pair<T, List<T>> implements Iterable<T> {
 
             @Override
             public T next() {
+                if (current == nil()) throw new NoSuchElementException();
                 T next = current.car;
                 current = current.cdr;
                 return next;
