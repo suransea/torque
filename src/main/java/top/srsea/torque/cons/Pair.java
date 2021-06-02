@@ -14,17 +14,25 @@
  * limitations under the License.
  */
 
-package top.srsea.torque.common;
+package top.srsea.torque.cons;
 
 import java.util.Objects;
 
-public final class Pair<F, S> {
-    public final F first;
-    public final S second;
+public class Pair<A, D> {
+    protected final A car;
+    protected final D cdr;
 
-    public Pair(F first, S second) {
-        this.first = first;
-        this.second = second;
+    public Pair(A car, D cdr) {
+        this.car = car;
+        this.cdr = cdr;
+    }
+
+    public A car() {
+        return car;
+    }
+
+    public D cdr() {
+        return cdr;
     }
 
     @Override
@@ -32,16 +40,16 @@ public final class Pair<F, S> {
         if (!(o instanceof Pair)) {
             return false;
         }
-        return Objects.equals(((Pair<?, ?>) o).first, first) && Objects.equals(((Pair<?, ?>) o).second, second);
+        return Objects.equals(((Pair<?, ?>) o).car, car) && Objects.equals(((Pair<?, ?>) o).cdr, cdr);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(first) ^ Objects.hashCode(second);
+        return Objects.hashCode(car) ^ Objects.hashCode(cdr);
     }
 
     @Override
     public String toString() {
-        return "(" + first + ", " + second + ")";
+        return "(" + car + " . " + cdr + ")";
     }
 }

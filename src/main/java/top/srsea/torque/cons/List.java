@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package top.srsea.torque.list;
+package top.srsea.torque.cons;
 
-import top.srsea.torque.common.Preconditions;
 import top.srsea.torque.function.Consumer;
 import top.srsea.torque.function.Function;
 import top.srsea.torque.function.Function2;
@@ -26,7 +25,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
-public class List<T> extends Cons<T, List<T>> implements Iterable<T> {
+public class List<T> extends Pair<T, List<T>> implements Iterable<T> {
 
     public List(T car, List<T> cdr) {
         super(car, cdr);
@@ -46,6 +45,10 @@ public class List<T> extends Cons<T, List<T>> implements Iterable<T> {
         return create(elems, 0);
     }
 
+    public static <T> List<T> cons(T car, List<T> cdr) {
+        return new List<>(car, cdr);
+    }
+
     @SuppressWarnings("unchecked")
     public static <T> List<T> nil() {
         return (List<T>) Nil.INSTANCE;
@@ -53,12 +56,30 @@ public class List<T> extends Cons<T, List<T>> implements Iterable<T> {
 
     private static <T> List<T> create(T[] arr, int offset) {
         if (arr.length == offset) return nil();
-        return new List<>(arr[offset], create(arr, offset + 1));
+        return cons(arr[offset], create(arr, offset + 1));
     }
 
-    public List<T> append(List<T> other) {
+    public static <T> List<T> flatten(List<List<T>> lists) {
+        return lists.foldRight(List.<T>nil(), new Function2<List<T>, List<T>, List<T>>() {
+            @Override
+            public List<T> invoke(List<T> x, List<T> y) {
+                return x.concat(y);
+            }
+        });
+    }
+
+    public List<T> concat(List<T> other) {
         if (this == nil()) return other;
-        return new List<>(car, cdr.append(other));
+        return cons(car, cdr.concat(other));
+    }
+
+    public List<T> prepend(T elem) {
+        return cons(elem, this);
+    }
+
+    public List<T> append(T elem) {
+        if (this == nil()) return cons(elem, this);
+        return cons(car, cdr.append(elem));
     }
 
     public int length() {
@@ -75,7 +96,7 @@ public class List<T> extends Cons<T, List<T>> implements Iterable<T> {
     }
 
     public T nth(int index) {
-        Preconditions.require(index >= 0, "index < 0");
+        if (index < 0) throw new IndexOutOfBoundsException(String.valueOf(index));
         if (this == nil()) throw new IndexOutOfBoundsException();
         if (index == 0) return car;
         return cdr.nth(--index);
@@ -89,22 +110,17 @@ public class List<T> extends Cons<T, List<T>> implements Iterable<T> {
 
     public <U> List<U> map(Function<? super T, ? extends U> transform) {
         if (this == nil()) return nil();
-        return new List<>(transform.invoke(car), cdr.map(transform));
+        return cons(transform.invoke(car), cdr.map(transform));
     }
 
     public <U> List<U> flatMap(Function<? super T, ? extends List<U>> transform) {
         if (this == nil()) return nil();
-        return map(transform).foldRight(List.<U>nil(), new Function2<List<U>, List<U>, List<U>>() {
-            @Override
-            public List<U> invoke(List<U> x, List<U> y) {
-                return x.append(y);
-            }
-        });
+        return flatten(map(transform));
     }
 
     public List<T> filter(Function<? super T, Boolean> pred) {
         if (this == nil()) return nil();
-        if (pred.invoke(car)) return new List<>(car, cdr.filter(pred));
+        if (pred.invoke(car)) return cons(car, cdr.filter(pred));
         return cdr.filter(pred);
     }
 
@@ -124,25 +140,25 @@ public class List<T> extends Cons<T, List<T>> implements Iterable<T> {
 
     private List<T> reverse(List<T> rest) {
         if (this == nil()) return rest;
-        return cdr.reverse(new List<>(car, rest));
+        return cdr.reverse(cons(car, rest));
     }
 
-    public Cons<List<T>, List<T>> span(Function<? super T, Boolean> pred) {
-        if (this == nil()) return new Cons<>(List.<T>nil(), List.<T>nil());
-        if (!pred.invoke(car)) return new Cons<>(List.<T>nil(), this);
-        Cons<List<T>, List<T>> spanCdr = cdr.span(pred);
-        return new Cons<>(new List<>(car, spanCdr.car), spanCdr.cdr);
+    public Pair<List<T>, List<T>> span(Function<? super T, Boolean> pred) {
+        if (this == nil()) return new Pair<>(List.<T>nil(), List.<T>nil());
+        if (!pred.invoke(car)) return new Pair<>(List.<T>nil(), this);
+        Pair<List<T>, List<T>> spanCdr = cdr.span(pred);
+        return new Pair<>(cons(car, spanCdr.car), spanCdr.cdr);
     }
 
     public List<List<T>> group(final Function2<? super T, ? super T, Boolean> eq) {
         if (this == nil()) return nil();
-        Cons<List<T>, List<T>> spanCdr = cdr.span(new Function<T, Boolean>() {
+        Pair<List<T>, List<T>> spanCdr = cdr.span(new Function<T, Boolean>() {
             @Override
             public Boolean invoke(T val) {
                 return eq.invoke(car, val);
             }
         });
-        return new List<>(new List<>(car, spanCdr.car), spanCdr.cdr.group(eq));
+        return cons(cons(car, spanCdr.car), spanCdr.cdr.group(eq));
     }
 
     public List<List<T>> group() {

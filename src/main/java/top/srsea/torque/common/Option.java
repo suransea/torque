@@ -62,6 +62,14 @@ public abstract class Option<T> implements Iterable<T> {
     }
 
     /**
+     * Returns the nested option value if it is not empty.
+     * Otherwise returns None.
+     */
+    public static <T> Option<T> flatten(Option<Option<T>> option) {
+        return option.isEmpty() ? Option.<T>none() : option.get();
+    }
+
+    /**
      * Returns if this option is None.
      */
     public abstract boolean isEmpty();

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.srsea.torque.list;
+package top.srsea.torque.cons;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;

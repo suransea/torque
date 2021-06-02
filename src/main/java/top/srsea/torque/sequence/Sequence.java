@@ -17,7 +17,6 @@
 package top.srsea.torque.sequence;
 
 import top.srsea.torque.common.Option;
-import top.srsea.torque.common.Preconditions;
 import top.srsea.torque.function.Consumer;
 import top.srsea.torque.function.Function;
 import top.srsea.torque.function.Function2;
@@ -134,6 +133,10 @@ public abstract class Sequence<T> implements Iterable<T> {
         return new Generate<>(generator);
     }
 
+    public static <T> Sequence<T> flatten(Iterable<? extends Iterable<? extends T>> iterable) {
+        return new Flatten<>(iterable);
+    }
+
     public int count() {
         int count = 0;
         for (T ignored : this) {
@@ -191,7 +194,7 @@ public abstract class Sequence<T> implements Iterable<T> {
     }
 
     public Option<T> nth(int index) {
-        Preconditions.require(index >= 0, "index < 0");
+        if (index < 0) return Option.none();
         Iterator<T> iterator = iterator();
         for (int i = index; i > 0; --i, iterator.next()) {
             if (!iterator.hasNext()) {

@@ -28,11 +28,6 @@ import java.util.Iterator;
 public class StringHelper {
 
     /**
-     * Char underline.
-     */
-    private static final char UNDERLINE = '_';
-
-    /**
      * Returns if the str is null or ""
      *
      * @param str source
@@ -50,55 +45,6 @@ public class StringHelper {
      */
     public static boolean isBlank(@Nullable String content) {
         return isEmpty(content) || "".equals(content.trim());
-    }
-
-    /**
-     * Converts camelCase to snake_case
-     *
-     * @param content source
-     * @return target
-     */
-    public static String camelToSnake(String content) {
-        if (isBlank(content)) {
-            return "";
-        }
-        int length = content.length();
-        StringBuilder result = new StringBuilder(length);
-        for (int i = 0; i < length; ++i) {
-            char c = content.charAt(i);
-            if (Character.isUpperCase(c)) {
-                result.append(UNDERLINE);
-                result.append(Character.toLowerCase(c));
-            } else {
-                result.append(c);
-            }
-        }
-        return result.toString();
-    }
-
-    /**
-     * Converts snake_case to camelCase
-     *
-     * @param content source
-     * @return target
-     */
-    public static String snakeToCamel(String content) {
-        if (isBlank(content)) {
-            return "";
-        }
-        int length = content.length();
-        StringBuilder result = new StringBuilder(length);
-        for (int i = 0; i < length; ++i) {
-            char c = content.charAt(i);
-            if (c == UNDERLINE) {
-                if (++i < length) {
-                    result.append(Character.toUpperCase(content.charAt(i)));
-                }
-            } else {
-                result.append(c);
-            }
-        }
-        return result.toString();
     }
 
     /**
