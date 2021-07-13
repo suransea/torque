@@ -39,7 +39,7 @@ public abstract class Sequence<T> implements Iterable<T> {
     }
 
     public static <T> Sequence<T> maybe(@Nullable T elem) {
-        return new Maybe<>(elem);
+        return elem == null ? Sequence.<T>empty() : single(elem);
     }
 
     @SuppressWarnings("unchecked")
