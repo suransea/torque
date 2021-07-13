@@ -95,16 +95,14 @@ public class List<T> extends Pair<T, List<T>> implements Iterable<T> {
         return cdr;
     }
 
-    public T nth(int index) {
-        if (index < 0) throw new IndexOutOfBoundsException(String.valueOf(index));
-        if (this == nil()) throw new IndexOutOfBoundsException();
-        if (index == 0) return car;
+    public List<T> nth(int index) {
+        if (this == nil() || index < 0) return nil();
+        if (index == 0) return this;
         return cdr.nth(--index);
     }
 
-    public T last() {
-        if (this == nil()) throw new NoSuchElementException();
-        if (cdr == nil()) return car;
+    public List<T> last() {
+        if (this == nil() || cdr == nil()) return this;
         return cdr.last();
     }
 
