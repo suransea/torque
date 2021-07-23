@@ -137,6 +137,10 @@ public abstract class Sequence<T> implements Iterable<T> {
         return new Flatten<>(iterable);
     }
 
+    public static <T> Sequence<T> repeat(T elem) {
+        return new Repeat<>(elem);
+    }
+
     public int count() {
         int count = 0;
         for (T ignored : this) {
@@ -258,7 +262,7 @@ public abstract class Sequence<T> implements Iterable<T> {
         }
     }
 
-    public <C extends Collection<T>> C to(C collection) {
+    public <C extends Collection<? super T>> C into(C collection) {
         for (T it : this) {
             collection.add(it);
         }
